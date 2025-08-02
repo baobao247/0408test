@@ -253,18 +253,26 @@
   </div>
 
   <!-- Nhạc nền ngày 4/8 -->
-  <audio id="birthdayMusic" src="https://github.com/baobao247/0408/raw/refs/heads/main/tiramisu-cake-original-mix-128-ytshorts.savetube.me.mp3" preload="auto"></audio>
-  <!-- Nhạc nút chúc mừng ngày thường -->
-  <audio id="clickSound" src="https://github.com/baobao247/0408/raw/refs/heads/main/party-horn-sound-effect-128-ytshorts.savetube.me.mp3" preload="auto"></audio>
+  <audio id="birthdayMusic" 
+         src="https://github.com/baobao247/0408/raw/refs/heads/main/tiramisu-cake-original-mix-128-ytshorts.savetube.me.mp3" 
+         preload="auto"></audio>
+  <!-- Âm thanh bấm nút ngày thường (âm thanh cũ) -->
+  <audio id="clickSound" 
+         src="https://github.com/baobao247/0408/raw/refs/heads/main/happy-birthday-to-you-bossa-nova-style-arrangement-21399.mp3" 
+         preload="auto"></audio>
+  <!-- Âm thanh bấm nút ngày 4/8 (party horn) -->
+  <audio id="birthdayClickSound" 
+         src="https://github.com/baobao247/0408/raw/refs/heads/main/party-horn-sound-effect-128-ytshorts.savetube.me.mp3" 
+         preload="auto"></audio>
 
   <script>
-    // Bật tắt chế độ test (true để giả lập ngày 4/8)
-    let testMode = false; 
+    // Bật tắt chế độ test (true để giả lập ngày 4/8 nếu muốn test)
+    let testMode = false;
 
     function getNow() {
       return testMode ? new Date(2025, 7, 4, 12, 0, 0) : new Date();
     }
-
+  
     function getNextBirthdayTarget(now) {
       const currentYear = now.getFullYear();
       const birthdayStart = new Date(currentYear, 7, 4, 0, 0, 0);  // 4/8
@@ -339,6 +347,7 @@
     let popupTimeout;
     let isShowing = false;
 
+    // Tạo tim rơi
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
@@ -349,6 +358,7 @@
       setTimeout(() => heart.remove(), 3000);
     }
 
+    // Tạo hoa rơi mượt
     function createFlower() {
       const flower = document.createElement("div");
       flower.textContent = "🌸";
@@ -356,6 +366,9 @@
       flower.style.left = Math.random() * 100 + "vw";
       flower.style.top = "-40px";
       flower.style.fontSize = (28 + Math.random() * 24) + "px";
+      flower.style.opacity = "0.82";
+      flower.style.pointerEvents = "none";
+      flower.style.transition = "transform 4.5s linear, opacity 4.5s linear";
       document.body.appendChild(flower);
       setTimeout(() => {
         flower.style.transform = `translateY(${window.innerHeight + 60}px) rotate(${Math.random() * 50 - 25}deg)`;
@@ -375,30 +388,43 @@
       }
     }
 
+    // Khởi động tim rơi nền (ngày thường)
+    function startHeartsRain() {
+      if (!isBirthdayDay()) setInterval(createHeart, 100);
+    }
+
     // Nhạc nền tự động ngày 4/8
     function autoplayBirthdayMusic() {
       const music = document.getElementById("birthdayMusic");
       if (music) {
         music.currentTime = 0;
         music.play().catch(() => {
-          // Nếu bị chặn autoplay, có thể yêu cầu tương tác người dùng mới phát được
-          // Bạn có thể thông báo hoặc thêm nút play riêng nếu cần
+          // Tắt lỗi nếu trình duyệt chặn tự động chạy âm thanh
         });
       }
     }
 
-    // Xử lý bấm nút chúc mừng
     function showPopup() {
       const popup = document.getElementById("popup");
       const button = document.getElementById("btn-chucmung");
-      const clickSound = document.getElementById("clickSound");
+      const clickSoundNormal = document.getElementById("clickSound");
+      const clickSoundBirthday = document.getElementById("birthdayClickSound");
 
       if (isBirthdayDay()) {
-        // Ngày 4/8: tạo hiệu ứng hoa rơi thay vì tim rơi
+        // Ngày 4/8: hoa rơi thêm khi bấm nút
         for(let i=0; i<100; i++) setTimeout(createFlower, Math.random() * 2000);
+        // Phát âm thanh bấm nút riêng ngày 4/8
+        if (clickSoundBirthday && clickSoundBirthday.paused) {
+          clickSoundBirthday.currentTime = 0;
+          clickSoundBirthday.play();
+        }
       } else {
-        // Ngày thường: tạo tim rơi
+        // Ngày thường: rơi tim, phát âm thanh cũ
         createManyHearts(100);
+        if (clickSoundNormal && clickSoundNormal.paused) {
+          clickSoundNormal.currentTime = 0;
+          clickSoundNormal.play();
+        }
       }
 
       if (!isShowing) {
@@ -421,17 +447,8 @@
       button.addEventListener("animationend", () => {
         button.classList.remove("bounce");
       }, { once: true });
-
-      // Phát sound bấm nút party horn (link bạn cung cấp)
-      if (clickSound) {
-        if (clickSound.paused) {
-          clickSound.currentTime = 0;
-          clickSound.play();
-        }
-      }
     }
 
-    // Popup hộp quà cân giữa tốt hơn
     function showGiftPopup() {
       const popup = document.getElementById("popup-gift");
       if (!popup) return;
@@ -447,18 +464,17 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       const giftIcon = document.getElementById("gift-icon");
+
       if (isBirthdayDay()) {
         autoplayBirthdayMusic();
         if (giftIcon) {
           giftIcon.style.display = "inline-block";
           giftIcon.addEventListener("click", showGiftPopup);
         }
+        startFlowerRain();
       } else {
         giftIcon.style.display = "none";
-        // Tim rơi nền auto (ngày thường)
-        setInterval(() => {
-          createHeart();
-        }, 100);
+        startHeartsRain();
       }
 
       // Icon mèo nền
@@ -476,12 +492,9 @@
           body.appendChild(cat);
         }
       }
-
       addCatIconsToBackground();
       window.addEventListener('resize', () => addCatIconsToBackground(32));
     });
-
   </script>
 </body>
-    </html>
-    
+</html>
