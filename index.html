@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sinh nhật Linh (Sinn)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
+  <style>
+    /* (CSS như trước, giữ nguyên phần style) */
+    /* ... (bạn có thể dùng style của full code trước đó) ... */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #ffe6f0;
+      font-family: 'Patrick Hand', cursive;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+    .title-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-top: 0;
+      margin-bottom: 0;
+      z-index: 2;
+    }
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: #d6336c;
+      margin: 0;
+      text-shadow: 1px 1px 2px #fff;
+      text-align: center;
+      user-select: none;
+    }
+    #birthday-date {
+      color: #d6336c;
+      font-size: 1.2rem;
+      font-family: 'Patrick Hand', cursive;
+      text-align: center;
+      user-select: none;
+      margin: 0;
+      z-index: 2;
+    }
+    .countdown-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: clamp(6px, 2vw, 12px);
+      margin: 20px auto;
+      max-width: 400px;
+      z-index: 2;
+    }
+    .time-box {
+      border: 2px solid #ff1493;
+      border-radius: 12px;
+      padding: clamp(6px, 2vw, 12px) clamp(8px, 3vw, 14px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: clamp(50px, 12vw, 70px);
+      background-color: #ffe6f0;
+      box-shadow: 0 2px 6px rgba(255, 20, 147, 0.3);
+      box-sizing: border-box;
+      user-select: none;
+    }
+    .time-box .number {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: bold;
+      color: #d6336c;
+      line-height: 1.1;
+    }
+    .time-box .label {
+      margin-top: 4px;
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      color: #ff1493;
+      font-weight: 600;
+    }
+    @media (max-width: 350px) {
+      .countdown-container {
+        gap: 6px;
+        margin: 10px 0;
+        justify-content: center;
+      }
+      .time-box {
+        width: 45px;
+        padding: 6px 8px;
+        margin-bottom: 8px;
+      }
+      .time-box .number {
+        font-size: 1.4rem;
+      }
+      .time-box .label {
+        font-size: 0.7rem;
+      }
+    }
+    button {
+      background-color: #ff66a3;
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      font-size: 1.3rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 2px 2px 8px #999;
+      transition: background-color 0.3s;
+      z-index: 2;
+    }
+    button:hover {
+      background-color: #ff3385;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    .bounce {
+      animation: bounce 0.3s ease;
+    }
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff0f5;
+      color: #d6336c;
+      border: 2px solid #ff99cc;
+      padding: 25px;
+      border-radius: 20px;
+      font-size: 1.8rem;
+      display: none;
+      z-index: 1001;
+      text-align: center;
+      opacity: 0;
+    }
+    .popup.show {
+      display: block;
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+    .popup.hide {
+      animation: fadeOut 0.5s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      to { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+    }
+    .heart {
+      width: 20px;
+      height: 20px;
+      position: fixed;
+      background: url('https://twemoji.maxcdn.com/v/latest/svg/2764.svg') no-repeat center;
+      background-size: contain;
+      animation: fall 2.5s linear forwards;
+      z-index: 1000;
+      pointer-events: none;
+    }
+    @keyframes fall {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+    .cat-bg-icon {
+      position: absolute;
+      z-index: 1;
+      width: 42px;
+      height: 42px;
+      opacity: 0.14;
+      pointer-events: none;
+      user-select: none;
+      transition: transform 0.5s;
+    }
+  </style>
+</head>
+<body>
+  <div class="title-container">
+    <h1>Sinh nhật Hoàng Linh (Sin)🎉🎂</h1>
+    <p id="birthday-date">...</p>
+  </div>
+
+  <div id="countdown" class="countdown-container">
+    <div class="time-box"><div class="number" id="days">0</div><div class="label">Ngày</div></div>
+    <div class="time-box"><div class="number" id="hours">0</div><div class="label">Giờ</div></div>
+    <div class="time-box"><div class="number" id="minutes">0</div><div class="label">Phút</div></div>
+    <div class="time-box"><div class="number" id="seconds">0</div><div class="label">Giây</div></div>
+  </div>
+
+  <button onclick="showPopup()">Chúc mừng 🎉🎂</button>
+
+  <div class="popup" id="popup">Chúc mừng sinh nhật Linhh 🎉🎂</div>
+
+  <audio id="clickSound" src="https://github.com/baobao247/0408/raw/refs/heads/main/happy-birthday-to-you-bossa-nova-style-arrangement-21399.mp3" preload="auto"></audio>
+
+  <script>
+    // Bật chế độ test ngày 4/8
+    let testMode = true;
+
+    function getNow() {
+      if (testMode) {
+        // Giả lập ngày 4/8/2025 12:00 trưa để test
+        return new Date(2025, 7, 4, 12, 0, 0);
+      }
+      return new Date();
+    }
+
+    function getNextBirthdayTarget(now) {
+      const currentYear = now.getFullYear();
+      const birthdayStart = new Date(currentYear, 7, 4, 0, 0, 0);  // 4/8
+      const birthdayEnd = new Date(currentYear, 7, 5, 0, 0, 0);    // 5/8
+
+      if (now < birthdayStart) {
+        return { target: birthdayStart, year: currentYear };
+      } else if (now >= birthdayStart && now < birthdayEnd) {
+        return null; // Đang trong ngày 4/8
+      } else {
+        return { target: new Date(currentYear + 1, 7, 4, 0, 0, 0), year: currentYear + 1 };
+      }
+    }
+
+    function updateCountdown() {
+      const now = getNow();
+      const ctn = document.getElementById("countdown");
+      const birthdayDateElem = document.getElementById("birthday-date");
+      const popup = document.getElementById("popup");
+
+      const result = getNextBirthdayTarget(now);
+
+      if (result === null) {
+        ctn.style.display = "none";
+        if (birthdayDateElem) {
+          birthdayDateElem.textContent = `04/08/${now.getFullYear()}`;
+        }
+        // Hiển thị popup và hiệu ứng hoa nếu chưa đang hiện
+        if (!popup.classList.contains("show")) {
+          popup.textContent = "Chúc mừng sinh nhật Linhh 🎉🌸🎂";
+          popup.classList.remove("hide");
+          popup.classList.add("show");
+          popup.style.display = "block";
+          startFlowerRain();
+        }
+        return;
+      }
+
+      if (!result) return;
+
+      const { target, year } = result;
+      if (birthdayDateElem) {
+        birthdayDateElem.textContent = `04/08/${year}`;
+      }
+      ctn.style.display = "flex";
+
+      // Ẩn popup nếu đang hiện
+      if (popup.classList.contains("show")) {
+        popup.classList.remove("show");
+        popup.classList.add("hide");
+        setTimeout(() => {
+          popup.style.display = "none";
+        }, 500);
+      }
+
+      const diff = target - now;
+
+      if (diff <= 0) {
+        document.getElementById("days").textContent = 0;
+        document.getElementById("hours").textContent = 0;
+        document.getElementById("minutes").textContent = 0;
+        document.getElementById("seconds").textContent = 0;
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("days").textContent = days;
+      document.getElementById("hours").textContent = hours;
+      document.getElementById("minutes").textContent = minutes;
+      document.getElementById("seconds").textContent = seconds;
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    let popupTimeout;
+    let isShowing = false;
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.top = "-20px";
+      heart.style.animationDuration = (2 + Math.random() * 2) + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 3000);
+    }
+
+    function startHeartsRain() {
+      setInterval(createHeart, 100);
+    }
+
+    function createManyHearts(count = 100) {
+      for (let i = 0; i < count; i++) {
+        const delay = Math.random() * 2000;
+        setTimeout(() => createHeart(), delay);
+      }
+    }
+
+    function createFlower() {
+      const flower = document.createElement("div");
+      flower.textContent = "🌸";
+      flower.style.position = "fixed";
+      flower.style.left = Math.random() * 100 + "vw";
+      flower.style.top = "-40px";
+      flower.style.fontSize = (28 + Math.random() * 24) + "px";
+      flower.style.opacity = 0.82;
+      flower.style.pointerEvents = "none";
+      flower.style.transition = "transform 4.5s linear, opacity 4.5s linear";
+      document.body.appendChild(flower);
+
+      setTimeout(() => {
+        flower.style.transform = `translateY(${window.innerHeight + 60}px) rotate(${Math.random() * 50 - 25}deg)`;
+        flower.style.opacity = "0";
+      }, 30);
+      setTimeout(() => flower.remove(), 4700);
+    }
+
+    function startFlowerRain() {
+      setInterval(createFlower, 300);
+    }
+
+    const catIconURL = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f431.svg';
+    function addCatIconsToBackground(count = 32) {
+      document.querySelectorAll('.cat-bg-icon').forEach(e => e.remove());
+      const body = document.body;
+      const { innerWidth: ww, innerHeight: wh } = window;
+      for (let i = 0; i < count; i++) {
+        const cat = document.createElement('img');
+        cat.className = 'cat-bg-icon';
+        cat.src = catIconURL;
+        cat.style.left = Math.random() * (ww - 48) + 'px';
+        cat.style.top = Math.random() * (wh - 48) + 'px';
+        cat.style.transform = `rotate(${Math.random() * 60 - 30}deg)`;
+        body.appendChild(cat);
+      }
+    }
+
+    function showPopup() {
+      const popup = document.getElementById("popup");
+      const button = document.querySelector("button");
+      const clickSound = document.getElementById("clickSound");
+
+      if (!isShowing) {
+        popup.classList.remove("hide");
+        popup.classList.add("show");
+        isShowing = true;
+      }
+      clearTimeout(popupTimeout);
+      popupTimeout = setTimeout(() => {
+        popup.classList.remove("show");
+        popup.classList.add("hide");
+        isShowing = false;
+        setTimeout(() => {
+          if (!isShowing) popup.style.display = "none";
+        }, 500);
+      }, 5000);
+      popup.style.display = "block";
+
+      createManyHearts(100);
+
+      button.classList.add("bounce");
+      button.addEventListener("animationend", () => {
+        button.classList.remove("bounce");
+      }, { once: true });
+
+      if (clickSound) {
+        if (clickSound.paused) {
+          clickSound.currentTime = 0;
+          clickSound.play();
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      startHeartsRain();
+      addCatIconsToBackground();
+      window.addEventListener('resize', () => addCatIconsToBackground(32));
+    });
+  </script>
+</body>
+</html>
