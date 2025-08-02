@@ -6,8 +6,6 @@
   <title>Sinh nhật Linh (Sinn)</title>
   <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
   <style>
-    /* (CSS như trước, giữ nguyên phần style) */
-    /* ... (bạn có thể dùng style của full code trước đó) ... */
     body {
       margin: 0;
       padding: 0;
@@ -21,6 +19,7 @@
       overflow-x: hidden;
       position: relative;
     }
+
     .title-container {
       display: flex;
       flex-direction: column;
@@ -38,6 +37,11 @@
       text-align: center;
       user-select: none;
     }
+    .birthday-date-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
     #birthday-date {
       color: #d6336c;
       font-size: 1.2rem;
@@ -47,6 +51,22 @@
       margin: 0;
       z-index: 2;
     }
+    /* Hộp quà */
+    #gift-icon {
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.15s;
+      margin-left: 0;
+      vertical-align: middle;
+    }
+    #gift-icon:hover {
+      transform: scale(1.17) rotate(-6deg);
+      filter: brightness(1.15) drop-shadow(0 0 6px #ffe06699);
+    }
+
+    /* Đếm ngược giữ nguyên */
     .countdown-container {
       display: flex;
       flex-wrap: wrap;
@@ -98,6 +118,10 @@
       .time-box .label {
         font-size: 0.7rem;
       }
+      #gift-icon {
+        width: 26px;
+        height: 26px;
+      }
     }
     button {
       background-color: #ff66a3;
@@ -122,7 +146,8 @@
     .bounce {
       animation: bounce 0.3s ease;
     }
-    .popup {
+    /* Popup */
+    .popup, .popup-gift {
       position: fixed;
       top: 50%;
       left: 50%;
@@ -132,17 +157,20 @@
       border: 2px solid #ff99cc;
       padding: 25px;
       border-radius: 20px;
-      font-size: 1.8rem;
+      font-size: 1.3rem;
       display: none;
-      z-index: 1001;
+      z-index: 2001;
       text-align: center;
       opacity: 0;
+      min-width: 270px;
+      max-width: 90vw;
+      line-height: 1.5;
     }
-    .popup.show {
+    .popup.show, .popup-gift.show {
       display: block;
       animation: fadeIn 0.5s ease-out forwards;
     }
-    .popup.hide {
+    .popup.hide, .popup-gift.hide {
       animation: fadeOut 0.5s ease-out forwards;
     }
     @keyframes fadeIn {
@@ -153,6 +181,7 @@
       from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
       to { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
     }
+    /* Tim rơi */
     .heart {
       width: 20px;
       height: 20px;
@@ -167,6 +196,7 @@
       0% { transform: translateY(0); opacity: 1; }
       100% { transform: translateY(100vh); opacity: 0; }
     }
+    /* Icon mèo nền */
     .cat-bg-icon {
       position: absolute;
       z-index: 1;
@@ -182,7 +212,11 @@
 <body>
   <div class="title-container">
     <h1>Sinh nhật Hoàng Linh (Sin)🎉🎂</h1>
-    <p id="birthday-date">...</p>
+    <div class="birthday-date-row">
+      <p id="birthday-date">...</p>
+      <img id="gift-icon" title="Mở quà sinh nhật!" style="display:none;" 
+           src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f381.svg" alt="Quà sinh nhật" />
+    </div>
   </div>
 
   <div id="countdown" class="countdown-container">
@@ -192,21 +226,28 @@
     <div class="time-box"><div class="number" id="seconds">0</div><div class="label">Giây</div></div>
   </div>
 
-  <button onclick="showPopup()">Chúc mừng 🎉🎂</button>
+  <button id="btn-chucmung" onclick="showPopup()">Chúc mừng 🎉🎂</button>
 
   <div class="popup" id="popup">Chúc mừng sinh nhật Linhh 🎉🎂</div>
+  <div class="popup-gift" id="popup-gift">
+    Chúc mừng sinh nhật Sinn!!! 🎉🎂<br/>
+    Bao chúc Sinn tuổi mới hạnh phúc, mạnh khoẻ, học giỏi,<br/>
+    đậu nguyện vọng 1 vào năm sau, luonvuituoi,<br>
+    số dư luôn "đồng biến", đạt được mục tiêu đề ra,<br/>
+    và có 1 ngày sinh nhật thật đáng nhớ nhaaaa!!!
+  </div>
 
+  <!-- Nhạc phát tự động ngày 4/8 -->
+  <audio id="birthdayMusic" src="https://github.com/baobao247/0408/raw/refs/heads/main/tiramisu-cake-original-mix-128-ytshorts.savetube.me.mp3" preload="auto"></audio>
+  <!-- Nhạc bấm nút "Chúc mừng" (nếu bạn vẫn cần) -->
   <audio id="clickSound" src="https://github.com/baobao247/0408/raw/refs/heads/main/happy-birthday-to-you-bossa-nova-style-arrangement-21399.mp3" preload="auto"></audio>
 
   <script>
-    // Bật chế độ test ngày 4/8
-    let testMode = true;
+    // THIẾT LẬP TEST NGÀY 4/8 (đổi thành false nếu dùng thật)
+    let testMode = false; // true để giả lập ngày 4/8
 
     function getNow() {
-      if (testMode) {
-        // Giả lập ngày 4/8/2025 12:00 trưa để test
-        return new Date(2025, 7, 4, 12, 0, 0);
-      }
+      if (testMode) return new Date(2025, 7, 4, 12, 0, 0);
       return new Date();
     }
 
@@ -224,49 +265,42 @@
       }
     }
 
+    // Cờ kiểm tra hiện có đúng ngày sinh nhật không
+    function isBirthdayDay() {
+      const now = getNow();
+      return now.getMonth() === 7 && now.getDate() === 4;
+    }
+
     function updateCountdown() {
       const now = getNow();
       const ctn = document.getElementById("countdown");
       const birthdayDateElem = document.getElementById("birthday-date");
       const popup = document.getElementById("popup");
+      const giftIcon = document.getElementById("gift-icon");
 
       const result = getNextBirthdayTarget(now);
 
       if (result === null) {
+        // ĐANG NGÀY 4/8: ẩn countdown, hiện ngày sinh, hiện hộp quà
         ctn.style.display = "none";
-        if (birthdayDateElem) {
+        if (birthdayDateElem)
           birthdayDateElem.textContent = `04/08/${now.getFullYear()}`;
-        }
-        // Hiển thị popup và hiệu ứng hoa nếu chưa đang hiện
-        if (!popup.classList.contains("show")) {
-          popup.textContent = "Chúc mừng sinh nhật Linhh 🎉🌸🎂";
-          popup.classList.remove("hide");
-          popup.classList.add("show");
-          popup.style.display = "block";
-          startFlowerRain();
-        }
+        if (giftIcon) giftIcon.style.display = "inline-block";
+        // popup và nhạc xử lý ở nơi khác (chỉ chạy lần đầu)
         return;
       }
-
-      if (!result) return;
-
-      const { target, year } = result;
-      if (birthdayDateElem) {
-        birthdayDateElem.textContent = `04/08/${year}`;
-      }
+      // Không phải ngày sinh nhật
+      if (birthdayDateElem) birthdayDateElem.textContent = `04/08/${result.year}`;
       ctn.style.display = "flex";
-
-      // Ẩn popup nếu đang hiện
+      if (giftIcon) giftIcon.style.display = "none";
+      // Ẩn popup nếu còn hiện
       if (popup.classList.contains("show")) {
         popup.classList.remove("show");
         popup.classList.add("hide");
-        setTimeout(() => {
-          popup.style.display = "none";
-        }, 500);
+        setTimeout(() => { popup.style.display = "none"; }, 500);
       }
-
-      const diff = target - now;
-
+      // Countdown đếm bình thường
+      const diff = result.target - now;
       if (diff <= 0) {
         document.getElementById("days").textContent = 0;
         document.getElementById("hours").textContent = 0;
@@ -274,7 +308,6 @@
         document.getElementById("seconds").textContent = 0;
         return;
       }
-
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
@@ -289,9 +322,7 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    let popupTimeout;
-    let isShowing = false;
-
+    // ==== TIM RƠI: chỉ rơi khi bấm nút NGÀY 4/8. Ngày bình thường như cũ nếu cần ====
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
@@ -302,10 +333,6 @@
       setTimeout(() => heart.remove(), 3000);
     }
 
-    function startHeartsRain() {
-      setInterval(createHeart, 100);
-    }
-
     function createManyHearts(count = 100) {
       for (let i = 0; i < count; i++) {
         const delay = Math.random() * 2000;
@@ -313,6 +340,12 @@
       }
     }
 
+    function startHeartsRain() {
+      // Ngày 4/8 KHÔNG rơi tim auto!
+      if (!isBirthdayDay()) setInterval(createHeart, 100);
+    }
+
+    // === Hoa rơi ===
     function createFlower() {
       const flower = document.createElement("div");
       flower.textContent = "🌸";
@@ -336,6 +369,7 @@
       setInterval(createFlower, 300);
     }
 
+    // ==== Icon mèo nền ====
     const catIconURL = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f431.svg';
     function addCatIconsToBackground(count = 32) {
       document.querySelectorAll('.cat-bg-icon').forEach(e => e.remove());
@@ -352,47 +386,98 @@
       }
     }
 
+    // ==== Nhạc phát tự động ngày 4/8 ====
+    function autoplayBirthdayMusic() {
+      const music = document.getElementById("birthdayMusic");
+      if (music) {
+        // iOS/autoplay policy: chỉ tự động phát được nếu người dùng nhấn!
+        // workaround: phát sau sự kiện user tương tác đầu tiên nếu cần
+        music.currentTime = 0;
+        music.play().catch(()=>{});
+      }
+    }
+
+    // ==== Bấm nút "Chúc mừng" ====
     function showPopup() {
       const popup = document.getElementById("popup");
-      const button = document.querySelector("button");
+      const button = document.getElementById("btn-chucmung");
       const clickSound = document.getElementById("clickSound");
 
-      if (!isShowing) {
+      if (!isBirthdayDay()) {
+        startHeartsRain(); // Ngày thường vẫn rơi tim nền bình thường
+      } else {
+        // Ngày 4/8 chỉ tạo tim khi bấm nút
+        createManyHearts(100);
+      }
+
+      if (!window.isShowing) {
         popup.classList.remove("hide");
         popup.classList.add("show");
-        isShowing = true;
+        window.isShowing = true;
       }
-      clearTimeout(popupTimeout);
-      popupTimeout = setTimeout(() => {
+      clearTimeout(window.popupTimeout);
+      window.popupTimeout = setTimeout(() => {
         popup.classList.remove("show");
         popup.classList.add("hide");
-        isShowing = false;
+        window.isShowing = false;
         setTimeout(() => {
-          if (!isShowing) popup.style.display = "none";
+          if (!window.isShowing) popup.style.display = "none";
         }, 500);
       }, 5000);
       popup.style.display = "block";
-
-      createManyHearts(100);
-
       button.classList.add("bounce");
       button.addEventListener("animationend", () => {
         button.classList.remove("bounce");
       }, { once: true });
 
-      if (clickSound) {
-        if (clickSound.paused) {
-          clickSound.currentTime = 0;
-          clickSound.play();
-        }
+      if (clickSound && clickSound.paused) {
+        clickSound.currentTime = 0;
+        clickSound.play();
       }
     }
 
+    // ==== Popup hiện khi bấm hộp quà ====
+    function showGiftPopup() {
+      const popup = document.getElementById("popup-gift");
+      if (!popup) return;
+      popup.classList.remove("hide");
+      popup.classList.add("show");
+      popup.style.display = "block";
+      setTimeout(() => {
+        popup.classList.remove("show");
+        popup.classList.add("hide");
+        setTimeout(() => { popup.style.display = "none"; }, 500);
+      }, 9900);
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
-      startHeartsRain();
       addCatIconsToBackground();
       window.addEventListener('resize', () => addCatIconsToBackground(32));
+      // nếu đúng ngày 4/8, thực thi hiệu ứng sinh nhật đặc biệt
+      if (isBirthdayDay()) {
+        // 1. Hiện popup+hoa rơi luôn khi vào trang (chỉ lần đầu, giữ lại logic trước)
+        const popup = document.getElementById("popup");
+        popup.textContent = "Chúc mừng sinh nhật Linhh 🎉🌸🎂";
+        popup.classList.remove("hide");
+        popup.classList.add("show");
+        popup.style.display = "block";
+        window.isShowing = true;
+        startFlowerRain();
+
+        // 2. Phát nhạc tự động (yêu cầu user chạm phát âm thanh nếu trình duyệt chặn)
+        autoplayBirthdayMusic();
+
+        // 3. Hiện hộp quà bên ngày sinh
+        const giftIcon = document.getElementById("gift-icon");
+        if (giftIcon) {
+          giftIcon.style.display = "inline-block";
+          giftIcon.addEventListener("click", showGiftPopup);
+        }
+      } else {
+        startHeartsRain(); // Ngày thường mới rơi tim auto
+      }
     });
+
   </script>
 </body>
 </html>
