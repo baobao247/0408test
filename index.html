@@ -6,6 +6,7 @@
   <title>Sinh nhật Linh (Sinn)</title>
   <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
   <style>
+    /* Body & layout */
     body {
       margin: 0;
       padding: 0;
@@ -19,7 +20,6 @@
       overflow-x: hidden;
       position: relative;
     }
-
     .title-container {
       display: flex;
       flex-direction: column;
@@ -66,8 +66,7 @@
       transform: scale(1.17) rotate(-6deg);
       filter: brightness(1.15) drop-shadow(0 0 6px #ffe06699);
     }
-
-    /* Đếm ngược giữ nguyên */
+    /* Countdown */
     .countdown-container {
       display: flex;
       flex-wrap: wrap;
@@ -124,6 +123,7 @@
         height: 26px;
       }
     }
+    /* Nút chúc mừng */
     button {
       background-color: #ff66a3;
       border: none;
@@ -148,8 +148,29 @@
     .bounce {
       animation: bounce 0.3s ease;
     }
-    /* Popup */
-    .popup, .popup-gift {
+    /* Popup chúc mừng nút */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff0f5;
+      color: #d6336c;
+      border: 2px solid #ff99cc;
+      padding: 25px;
+      border-radius: 20px;
+      font-size: 1.8rem; /* font size lớn */
+      display: none;
+      z-index: 2001;
+      text-align: center;
+      opacity: 0;
+      min-width: 270px;
+      max-width: 90vw;
+      line-height: 1.5;
+      box-sizing: border-box;
+    }
+    /* Popup quà */
+    .popup-gift {
       position: fixed;
       top: 50%;
       left: 50%;
@@ -195,19 +216,26 @@
       z-index: 1000;
       pointer-events: none;
     }
-    /* Hoa rơi */
+    /* Hoa rơi với animation xoay */
+    @keyframes flowerFall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
     .flower {
       position: fixed;
       font-size: 28px;
-      opacity: 0.82;
       pointer-events: none;
-      transition: transform 4.5s linear, opacity 4.5s linear;
       user-select: none;
+      animation: flowerFall 4.5s linear forwards;
       z-index: 1000;
-    }
-    @keyframes fall {
-      0% { transform: translateY(0); opacity: 1; }
-      100% { transform: translateY(100vh); opacity: 0; }
+      opacity: 0.82;
+      will-change: transform, opacity;
     }
     /* Icon mèo nền */
     .cat-bg-icon {
@@ -241,9 +269,7 @@
 
   <button id="btn-chucmung" aria-label="Nút chúc mừng" onclick="showPopup()">Chúc mừng 🎉🎂</button>
 
-  <!-- Popup chúc mừng nút -->
   <div class="popup" id="popup">Chúc mừng sinh nhật Linhh 🎉🎂</div>
-  <!-- Popup hộp quà -->
   <div class="popup-gift" id="popup-gift">
     Chúc mừng sinh nhật Sinn!!! 🎉🎂<br/>
     Bao chúc Sinn tuổi mới hạnh phúc, mạnh khoẻ, học giỏi,<br/>
@@ -256,32 +282,33 @@
   <audio id="birthdayMusic" 
          src="https://github.com/baobao247/0408/raw/refs/heads/main/tiramisu-cake-original-mix-128-ytshorts.savetube.me.mp3" 
          preload="auto"></audio>
+
   <!-- Âm thanh bấm nút ngày thường (âm thanh cũ) -->
   <audio id="clickSound" 
          src="https://github.com/baobao247/0408/raw/refs/heads/main/happy-birthday-to-you-bossa-nova-style-arrangement-21399.mp3" 
          preload="auto"></audio>
+
   <!-- Âm thanh bấm nút ngày 4/8 (party horn) -->
   <audio id="birthdayClickSound" 
          src="https://github.com/baobao247/0408/raw/refs/heads/main/party-horn-sound-effect-128-ytshorts.savetube.me.mp3" 
          preload="auto"></audio>
 
   <script>
-    // Bật tắt chế độ test (true để giả lập ngày 4/8 nếu muốn test)
-    let testMode = true;
+    let testMode = false;
 
     function getNow() {
       return testMode ? new Date(2025, 7, 4, 12, 0, 0) : new Date();
     }
-  
+
     function getNextBirthdayTarget(now) {
       const currentYear = now.getFullYear();
-      const birthdayStart = new Date(currentYear, 7, 4, 0, 0, 0);  // 4/8
-      const birthdayEnd = new Date(currentYear, 7, 5, 0, 0, 0);    // 5/8
+      const birthdayStart = new Date(currentYear, 7, 4, 0, 0, 0);
+      const birthdayEnd = new Date(currentYear, 7, 5, 0, 0, 0);
 
       if (now < birthdayStart) {
         return { target: birthdayStart, year: currentYear };
       } else if (now >= birthdayStart && now < birthdayEnd) {
-        return null; // Đang trong ngày 4/8
+        return null;
       } else {
         return { target: new Date(currentYear + 1, 7, 4, 0, 0, 0), year: currentYear + 1 };
       }
@@ -292,22 +319,19 @@
       return now.getMonth() === 7 && now.getDate() === 4;
     }
 
-    // Đếm ngược và hiển thị ngày sinh động
     function updateCountdown() {
       const now = getNow();
       const ctn = document.getElementById("countdown");
       const birthdayDateElem = document.getElementById("birthday-date");
       const popup = document.getElementById("popup");
       const giftIcon = document.getElementById("gift-icon");
-
       const result = getNextBirthdayTarget(now);
 
       if (result === null) {
-        // Ngày 4/8
         ctn.style.display = "none";
-        if (birthdayDateElem) birthdayDateElem.textContent = `04/08/${now.getFullYear()}`;
-        if (giftIcon) giftIcon.style.display = "inline-block";
-        // Ẩn popup nút chúc mừng nếu đang có
+        birthdayDateElem.textContent = `04/08/${now.getFullYear()}`;
+        giftIcon.style.display = "inline-block";
+
         if (popup.classList.contains("show")) {
           popup.classList.remove("show");
           popup.classList.add("hide");
@@ -316,13 +340,11 @@
         return;
       }
 
-      // Ngày thường
-      if (birthdayDateElem) birthdayDateElem.textContent = `04/08/${result.year}`;
+      birthdayDateElem.textContent = `04/08/${result.year}`;
       ctn.style.display = "flex";
-      if (giftIcon) giftIcon.style.display = "none";
+      giftIcon.style.display = "none";
 
       const diff = result.target - now;
-
       if (diff <= 0) {
         ["days", "hours", "minutes", "seconds"].forEach(id => {
           document.getElementById(id).textContent = 0;
@@ -330,15 +352,10 @@
         return;
       }
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
-
-      document.getElementById("days").textContent = days;
-      document.getElementById("hours").textContent = hours;
-      document.getElementById("minutes").textContent = minutes;
-      document.getElementById("seconds").textContent = seconds;
+      document.getElementById("days").textContent = Math.floor(diff / (1000 * 60 * 60 * 24));
+      document.getElementById("hours").textContent = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      document.getElementById("minutes").textContent = Math.floor((diff / (1000 * 60)) % 60);
+      document.getElementById("seconds").textContent = Math.floor((diff / 1000) % 60);
     }
 
     setInterval(updateCountdown, 1000);
@@ -347,7 +364,6 @@
     let popupTimeout;
     let isShowing = false;
 
-    // Tạo tim rơi
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
@@ -358,23 +374,15 @@
       setTimeout(() => heart.remove(), 3000);
     }
 
-    // Tạo hoa rơi mượt
+    // Moved transition/animation CSS to CSS style, so here only create element
     function createFlower() {
       const flower = document.createElement("div");
       flower.textContent = "🌸";
       flower.className = "flower";
       flower.style.left = Math.random() * 100 + "vw";
-      flower.style.top = "-40px";
       flower.style.fontSize = (28 + Math.random() * 24) + "px";
-      flower.style.opacity = "0.82";
-      flower.style.pointerEvents = "none";
-      flower.style.transition = "transform 4.5s linear, opacity 4.5s linear";
       document.body.appendChild(flower);
-      setTimeout(() => {
-        flower.style.transform = `translateY(${window.innerHeight + 60}px) rotate(${Math.random() * 50 - 25}deg)`;
-        flower.style.opacity = "0";
-      }, 30);
-      setTimeout(() => flower.remove(), 4700);
+      setTimeout(() => flower.remove(), 4600);
     }
 
     function startFlowerRain() {
@@ -388,18 +396,30 @@
       }
     }
 
-    // Khởi động tim rơi nền (ngày thường)
     function startHeartsRain() {
       if (!isBirthdayDay()) setInterval(createHeart, 100);
     }
 
-    // Nhạc nền tự động ngày 4/8
     function autoplayBirthdayMusic() {
       const music = document.getElementById("birthdayMusic");
-      if (music) {
-        music.currentTime = 0;
-        music.play().catch(() => {
-          // Tắt lỗi nếu trình duyệt chặn tự động chạy âm thanh
+      if (!music) return;
+      music.currentTime = 0;
+      const playPromise = music.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          // Phát thành công, ẩn nút bật nhạc nếu có
+          let btnPlay = document.getElementById("btn-play-music");
+          if (btnPlay) btnPlay.style.display = "none";
+        }).catch(() => {
+          // Nếu bị chặn, hiển thị nút bật nhạc
+          let btnPlay = document.getElementById("btn-play-music");
+          if (btnPlay) {
+            btnPlay.style.display = "block";
+            btnPlay.onclick = () => {
+              music.play();
+              btnPlay.style.display = "none";
+            }
+          }
         });
       }
     }
@@ -411,15 +431,12 @@
       const clickSoundBirthday = document.getElementById("birthdayClickSound");
 
       if (isBirthdayDay()) {
-        // Ngày 4/8: hoa rơi thêm khi bấm nút
         for(let i=0; i<100; i++) setTimeout(createFlower, Math.random() * 2000);
-        // Phát âm thanh bấm nút riêng ngày 4/8
         if (clickSoundBirthday && clickSoundBirthday.paused) {
           clickSoundBirthday.currentTime = 0;
           clickSoundBirthday.play();
         }
       } else {
-        // Ngày thường: rơi tim, phát âm thanh cũ
         createManyHearts(100);
         if (clickSoundNormal && clickSoundNormal.paused) {
           clickSoundNormal.currentTime = 0;
@@ -441,6 +458,7 @@
           if (!isShowing) popup.style.display = "none";
         }, 500);
       }, 5000);
+
       popup.style.display = "block";
 
       button.classList.add("bounce");
@@ -492,9 +510,15 @@
           body.appendChild(cat);
         }
       }
+
       addCatIconsToBackground();
       window.addEventListener('resize', () => addCatIconsToBackground(32));
     });
   </script>
+
+  <!-- Nút bật nhạc + thông báo nếu trình duyệt chặn autoplay -->
+  <button id="btn-play-music" style="display:none; position: fixed; bottom: 14px; right: 14px; z-index: 3000; padding: 8px 14px; background:#ff66a3; color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold;">Bật nhạc 🎵</button>
+
 </body>
-</html>
+  </html>
+  
