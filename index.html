@@ -215,6 +215,7 @@
       animation: fall 2.5s linear forwards;
       z-index: 1000;
       pointer-events: none;
+      top: -20px;
     }
     /* Hoa rơi với animation xoay */
     @keyframes flowerFall {
@@ -229,7 +230,6 @@
     }
     .flower {
       position: fixed;
-      font-size: 28px;
       pointer-events: none;
       user-select: none;
       animation: flowerFall 4.5s linear forwards;
@@ -293,8 +293,11 @@
          src="https://github.com/baobao247/0408/raw/refs/heads/main/party-horn-sound-effect-128-ytshorts.savetube.me.mp3" 
          preload="auto"></audio>
 
+  <!-- Nút bật nhạc nếu trình duyệt chặn autoplay -->
+  <button id="btn-play-music" style="display:none; position: fixed; bottom: 14px; right: 14px; z-index: 3000; padding: 8px 14px; background:#ff66a3; color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold;">Bật nhạc 🎵</button>
+
   <script>
-    let testMode = true;
+    let testMode = false; // Đổi true để test ngày 4/8
 
     function getNow() {
       return testMode ? new Date(2025, 7, 4, 12, 0, 0) : new Date();
@@ -304,7 +307,6 @@
       const currentYear = now.getFullYear();
       const birthdayStart = new Date(currentYear, 7, 4, 0, 0, 0);
       const birthdayEnd = new Date(currentYear, 7, 5, 0, 0, 0);
-
       if (now < birthdayStart) {
         return { target: birthdayStart, year: currentYear };
       } else if (now >= birthdayStart && now < birthdayEnd) {
@@ -374,12 +376,12 @@
       setTimeout(() => heart.remove(), 3000);
     }
 
-    // Moved transition/animation CSS to CSS style, so here only create element
     function createFlower() {
       const flower = document.createElement("div");
       flower.textContent = "🌸";
       flower.className = "flower";
       flower.style.left = Math.random() * 100 + "vw";
+      flower.style.top = "-40px";
       flower.style.fontSize = (28 + Math.random() * 24) + "px";
       document.body.appendChild(flower);
       setTimeout(() => flower.remove(), 4600);
@@ -403,15 +405,15 @@
     function autoplayBirthdayMusic() {
       const music = document.getElementById("birthdayMusic");
       if (!music) return;
+
       music.currentTime = 0;
       const playPromise = music.play();
+
       if (playPromise !== undefined) {
         playPromise.then(() => {
-          // Phát thành công, ẩn nút bật nhạc nếu có
           let btnPlay = document.getElementById("btn-play-music");
           if (btnPlay) btnPlay.style.display = "none";
         }).catch(() => {
-          // Nếu bị chặn, hiển thị nút bật nhạc
           let btnPlay = document.getElementById("btn-play-music");
           if (btnPlay) {
             btnPlay.style.display = "block";
@@ -458,7 +460,6 @@
           if (!isShowing) popup.style.display = "none";
         }, 500);
       }, 5000);
-
       popup.style.display = "block";
 
       button.classList.add("bounce");
@@ -495,7 +496,6 @@
         startHeartsRain();
       }
 
-      // Icon mèo nền
       function addCatIconsToBackground(count = 32) {
         document.querySelectorAll('.cat-bg-icon').forEach(e => e.remove());
         const body = document.body;
@@ -515,10 +515,6 @@
       window.addEventListener('resize', () => addCatIconsToBackground(32));
     });
   </script>
-
-  <!-- Nút bật nhạc + thông báo nếu trình duyệt chặn autoplay -->
-  <button id="btn-play-music" style="display:none; position: fixed; bottom: 14px; right: 14px; z-index: 3000; padding: 8px 14px; background:#ff66a3; color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold;">Bật nhạc 🎵</button>
-
 </body>
-  </html>
-  
+    </html>
+    
