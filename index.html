@@ -52,7 +52,6 @@
       margin: 0;
       vertical-align: middle;
     }
-    /* Hộp quà */
     #gift-icon {
       width: 32px;
       height: 32px;
@@ -65,7 +64,6 @@
       transform: scale(1.17) rotate(-6deg);
       filter: brightness(1.15) drop-shadow(0 0 6px #ffe06699);
     }
-    /* Countdown */
     .countdown-container {
       display: flex;
       flex-wrap: wrap;
@@ -122,7 +120,6 @@
         height: 26px;
       }
     }
-    /* Nút chúc mừng */
     button {
       background-color: #ff66a3;
       border: none;
@@ -147,7 +144,6 @@
     .bounce {
       animation: bounce 0.3s ease;
     }
-    /* Popup chúc mừng nút */
     .popup {
       position: fixed;
       top: 50%;
@@ -158,7 +154,7 @@
       border: 2px solid #ff99cc;
       padding: 25px;
       border-radius: 20px;
-      font-size: 1.8rem; /* font size lớn */
+      font-size: 1.8rem;
       display: none;
       z-index: 2001;
       text-align: center;
@@ -168,7 +164,6 @@
       line-height: 1.5;
       box-sizing: border-box;
     }
-    /* Popup quà */
     .popup-gift {
       position: fixed;
       top: 50%;
@@ -204,7 +199,6 @@
       from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
       to { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
     }
-    /* Tim rơi */
     .heart {
       width: 20px;
       height: 20px;
@@ -220,7 +214,6 @@
       0% { transform: translateY(0); opacity: 1; }
       100% { transform: translateY(100vh); opacity: 0; }
     }
-    /* Hoa rơi với animation xoay */
     @keyframes flowerFall {
       0% {
         transform: translateY(0) rotate(0deg);
@@ -240,7 +233,6 @@
       opacity: 0.82;
       will-change: transform, opacity;
     }
-    /* Icon mèo nền */
     .cat-bg-icon {
       position: absolute;
       z-index: 1;
@@ -296,11 +288,11 @@
          src="https://github.com/baobao247/0408/raw/refs/heads/main/party-horn-sound-effect-128-ytshorts.savetube.me.mp3" 
          preload="auto"></audio>
 
-  <!-- Nút bật nhạc nếu trình duyệt chặn autoplay -->
+  <!-- Nút bật/tắt nhạc ngày 4/8 -->
   <button id="btn-play-music" style="display:none; position: fixed; bottom: 14px; right: 14px; z-index: 3000; padding: 8px 14px; background:#ff66a3; color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold;">Bật nhạc 🎵</button>
 
 <script>
-  let testMode = true; // bật true để test ngày 4/8
+  let testMode = false; // đổi true nếu muốn test luôn ngày 4/8
 
   function getNow() {
     return testMode ? new Date(2025, 7, 4, 12, 0, 0) : new Date();
@@ -310,7 +302,6 @@
     const currentYear = now.getFullYear();
     const birthdayStart = new Date(currentYear, 7, 4, 0, 0, 0);
     const birthdayEnd = new Date(currentYear, 7, 5, 0, 0, 0);
-
     if (now < birthdayStart) {
       return { target: birthdayStart, year: currentYear };
     } else if (now >= birthdayStart && now < birthdayEnd) {
@@ -402,31 +393,59 @@
     }
   }
 
+  function createManyFlowers(count = 100) {
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        const flower = document.createElement("div");
+        flower.textContent = "🌸";
+        flower.className = "flower";
+        flower.style.left = Math.random() * 100 + "vw";
+        flower.style.top = "-40px";
+        flower.style.fontSize = (28 + Math.random() * 24) + "px";
+        document.body.appendChild(flower);
+        setTimeout(() => flower.remove(), 4600);
+      }, Math.random() * 2000);
+    }
+  }
+
   function startHeartsRain() {
     if (!isBirthdayDay()) setInterval(createHeart, 100);
   }
 
+  // Toggle chức năng bật/tắt nhạc nền 4/8
+  const btnPlayMusic = document.getElementById("btn-play-music");
+  const birthdayMusic = document.getElementById("birthdayMusic");
+  function toggleMusic() {
+    if (!birthdayMusic) return;
+    if (birthdayMusic.paused) {
+      birthdayMusic.play();
+      if (btnPlayMusic) btnPlayMusic.textContent = "Tắt nhạc 🔇";
+    } else {
+      birthdayMusic.pause();
+      if (btnPlayMusic) btnPlayMusic.textContent = "Bật nhạc 🎵";
+    }
+  }
+  if (btnPlayMusic) {
+    btnPlayMusic.addEventListener("click", toggleMusic);
+  }
+
   function autoplayBirthdayMusic() {
-    const music = document.getElementById("birthdayMusic");
-    if (!music) return;
+    if (!birthdayMusic) return;
 
-    music.loop = true;
-
-    music.currentTime = 0;
-    const playPromise = music.play();
+    birthdayMusic.loop = true;
+    birthdayMusic.currentTime = 0;
+    const playPromise = birthdayMusic.play();
 
     if (playPromise !== undefined) {
       playPromise.then(() => {
-        const btnPlay = document.getElementById("btn-play-music");
-        if (btnPlay) btnPlay.style.display = "none";
+        if (btnPlayMusic) {
+          btnPlayMusic.style.display = "block";
+          btnPlayMusic.textContent = "Tắt nhạc 🔇";
+        }
       }).catch(() => {
-        const btnPlay = document.getElementById("btn-play-music");
-        if (btnPlay) {
-          btnPlay.style.display = "block";
-          btnPlay.onclick = () => {
-            music.play();
-            btnPlay.style.display = "none";
-          }
+        if (btnPlayMusic) {
+          btnPlayMusic.style.display = "block";
+          btnPlayMusic.textContent = "Bật nhạc 🎵";
         }
       });
     }
@@ -439,7 +458,7 @@
     const clickSoundBirthday = document.getElementById("birthdayClickSound");
 
     if (isBirthdayDay()) {
-      for(let i=0; i<100; i++) setTimeout(createFlower, Math.random() * 2000);
+      createManyFlowers(100); // mỗi lần bấm nút sẽ rơi hoa lộn xộn đẹp
       if (clickSoundBirthday && clickSoundBirthday.paused) {
         clickSoundBirthday.currentTime = 0;
         clickSoundBirthday.play();
@@ -467,7 +486,6 @@
         if (!isShowing) popup.style.display = "none";
       }, 500);
     }, 5000);
-
     popup.style.display = "block";
 
     button.classList.add("bounce");
@@ -504,7 +522,6 @@
       startHeartsRain();
     }
 
-    // Icon mèo nền
     function addCatIconsToBackground(count = 32) {
       document.querySelectorAll('.cat-bg-icon').forEach(e => e.remove());
       const body = document.body;
@@ -519,11 +536,9 @@
         body.appendChild(cat);
       }
     }
-
     addCatIconsToBackground();
     window.addEventListener('resize', () => addCatIconsToBackground(32));
   });
 </script>
 </body>
-  </html>
-                          
+</html>
