@@ -7,26 +7,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
   <style>
     body {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding:0;
       background-color: #ffe6f0;
       font-family: 'Patrick Hand', cursive;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; overflow-x: hidden; position: relative;
     }
     .title-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      margin-top: 0;
-      margin-bottom: 0;
-      z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      margin-top: 0; margin-bottom: 0; z-index: 2;
     }
     h1 {
       font-size: clamp(2rem, 5vw, 3rem);
@@ -37,11 +26,7 @@
       user-select: none;
     }
     .birthday-date-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      position: relative;
-      z-index: 2;
+      display: flex; align-items: center; gap: 10px; position: relative; z-index: 2;
     }
     #birthday-date {
       color: #d6336c;
@@ -53,8 +38,7 @@
       vertical-align: middle;
     }
     #gift-icon {
-      width: 32px;
-      height: 32px;
+      width: 32px; height: 32px;
       cursor: pointer;
       user-select: none;
       transition: transform 0.15s;
@@ -65,21 +49,16 @@
       filter: brightness(1.15) drop-shadow(0 0 6px #ffe06699);
     }
     .countdown-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      display: flex; flex-wrap: wrap; justify-content: center;
       gap: clamp(6px, 2vw, 12px);
       margin: 20px auto;
       max-width: 400px;
       z-index: 2;
     }
     .time-box {
-      border: 2px solid #ff1493;
-      border-radius: 12px;
+      border: 2px solid #ff1493; border-radius: 12px;
       padding: clamp(6px, 2vw, 12px) clamp(8px, 3vw, 14px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      display: flex; flex-direction: column; align-items: center;
       width: clamp(50px, 12vw, 70px);
       background-color: #ffe6f0;
       box-shadow: 0 2px 6px rgba(255, 20, 147, 0.3);
@@ -100,14 +79,10 @@
     }
     @media (max-width: 350px) {
       .countdown-container {
-        gap: 6px;
-        margin: 10px 0;
-        justify-content: center;
+        gap: 6px; margin: 10px 0; justify-content: center;
       }
       .time-box {
-        width: 45px;
-        padding: 6px 8px;
-        margin-bottom: 8px;
+        width: 45px; padding: 6px 8px; margin-bottom: 8px;
       }
       .time-box .number {
         font-size: 1.4rem;
@@ -116,8 +91,7 @@
         font-size: 0.7rem;
       }
       #gift-icon {
-        width: 26px;
-        height: 26px;
+        width: 26px; height: 26px;
       }
     }
     button {
@@ -131,23 +105,23 @@
       font-weight: bold;
       box-shadow: 2px 2px 8px #999;
       transition: background-color 0.3s;
-      z-index: 2;
+      z-index: 10;
       user-select: none;
+      position: relative;
     }
     button:hover {
       background-color: #ff3385;
     }
     @keyframes bounce {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.2); }
+      0%, 100% { transform: scale(1);}
+      50% { transform: scale(1.2);}
     }
     .bounce {
       animation: bounce 0.3s ease;
     }
     .popup {
       position: fixed;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       background: #fff0f5;
       color: #d6336c;
@@ -156,7 +130,7 @@
       border-radius: 20px;
       font-size: 1.8rem;
       display: none;
-      z-index: 2001;
+      z-index: 3001;
       text-align: center;
       opacity: 0;
       min-width: 270px;
@@ -166,8 +140,7 @@
     }
     .popup-gift {
       position: fixed;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       background: #fff0f5;
       color: #d6336c;
@@ -176,7 +149,7 @@
       border-radius: 20px;
       font-size: 1.3rem;
       display: none;
-      z-index: 2001;
+      z-index: 3001;
       text-align: center;
       opacity: 0;
       min-width: 270px;
@@ -192,56 +165,64 @@
       animation: fadeOut 0.5s ease-out forwards;
     }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      from {opacity:0; transform: translate(-50%,-50%) scale(0.5);}
+      to {opacity:1; transform: translate(-50%,-50%) scale(1);}
     }
     @keyframes fadeOut {
-      from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-      to { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      from {opacity:1; transform: translate(-50%,-50%) scale(1);}
+      to {opacity:0; transform: translate(-50%,-50%) scale(0.5);}
     }
     .heart {
-      width: 20px;
-      height: 20px;
+      width: 20px; height: 20px;
       position: fixed;
       background: url('https://twemoji.maxcdn.com/v/latest/svg/2764.svg') no-repeat center;
       background-size: contain;
       animation: fall 2.5s linear forwards;
-      z-index: 1000;
+      z-index: 998;
       pointer-events: none;
       top: -20px;
     }
     @keyframes fall {
-      0% { transform: translateY(0); opacity: 1; }
-      100% { transform: translateY(100vh); opacity: 0; }
+      0% { transform: translateY(0); opacity:1;}
+      100% { transform: translateY(100vh); opacity:0;}
     }
     @keyframes flowerFall {
-      0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(100vh) rotate(360deg);
-        opacity: 0;
-      }
+      0% { transform: translateY(0) rotate(0deg); opacity:1;}
+      100% { transform: translateY(100vh) rotate(360deg); opacity:0;}
     }
     .flower {
       position: fixed;
       pointer-events: none;
       user-select: none;
       animation: flowerFall 4.5s linear forwards;
-      z-index: 1000;
+      z-index: 997;
       opacity: 0.82;
-      will-change: transform, opacity;
+      will-change: transform,opacity;
     }
     .cat-bg-icon {
       position: absolute;
       z-index: 1;
-      width: 42px;
-      height: 42px;
+      width: 42px; height: 42px;
       opacity: 0.14;
       pointer-events: none;
       user-select: none;
       transition: transform 0.5s;
+    }
+    /* Nút bật/tắt nhạc */
+    #btn-play-music {
+      display:none;
+      position: fixed;
+      bottom: 14px;
+      right: 14px;
+      z-index: 4000;
+      padding: 8px 14px;
+      background:#ff66a3;
+      color:white;
+      border:none;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight: bold;
+      user-select:none;
     }
   </style>
 </head>
@@ -288,11 +269,10 @@
          src="https://github.com/baobao247/0408/raw/refs/heads/main/party-horn-sound-effect-128-ytshorts.savetube.me.mp3" 
          preload="auto"></audio>
 
-  <!-- Nút bật/tắt nhạc ngày 4/8 -->
-  <button id="btn-play-music" style="display:none; position: fixed; bottom: 14px; right: 14px; z-index: 3000; padding: 8px 14px; background:#ff66a3; color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold;">Bật nhạc 🎵</button>
+  <button id="btn-play-music">Bật nhạc 🎵</button>
 
 <script>
-  let testMode = true; // đổi true để test ngày 4/8
+  let testMode = false; // đổi true để test ngày 4/8
 
   function getNow() {
     return testMode ? new Date(2025, 7, 4, 12, 0, 0) : new Date();
@@ -382,22 +362,23 @@
     setTimeout(() => flower.remove(), 4600);
   }
 
-  function createManyFlowers(count = 100) {
+  // Tạo 50 hoa rơi lộn xộn riêng mỗi lần bấm nút
+  function createManyFlowers(count = 50) {
     for (let i = 0; i < count; i++) {
       setTimeout(() => {
         const flower = document.createElement("div");
         flower.textContent = "🌸";
         flower.className = "flower";
-        flower.style.left = Math.random() * 100 + "vw";
+        flower.style.left = (Math.random() * 100) + "vw";
         flower.style.top = "-40px";
         flower.style.fontSize = (28 + Math.random() * 24) + "px";
         document.body.appendChild(flower);
         setTimeout(() => flower.remove(), 4600);
-      }, Math.random() * 2000);
+      }, Math.random() * 2500);
     }
   }
 
-  function createManyHearts(count = 100) {
+  function createManyHearts(count = 50) {
     for (let i = 0; i < count; i++) {
       const delay = Math.random() * 2000;
       setTimeout(() => createHeart(), delay);
@@ -457,13 +438,13 @@
     const clickSoundBirthday = document.getElementById("birthdayClickSound");
 
     if (isBirthdayDay()) {
-      createManyFlowers(100);
+      createManyFlowers(50);
       if (clickSoundBirthday && clickSoundBirthday.paused) {
         clickSoundBirthday.currentTime = 0;
         clickSoundBirthday.play();
       }
     } else {
-      createManyHearts(100);
+      createManyHearts(50);
       if (clickSoundNormal && clickSoundNormal.paused) {
         clickSoundNormal.currentTime = 0;
         clickSoundNormal.play();
@@ -475,7 +456,6 @@
       popup.classList.add("show");
       isShowing = true;
     }
-
     clearTimeout(popupTimeout);
     popupTimeout = setTimeout(() => {
       popup.classList.remove("show");
@@ -541,4 +521,5 @@
   });
 </script>
 </body>
-</html>
+  </html>
+  
