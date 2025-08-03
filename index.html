@@ -299,7 +299,7 @@
   <button id="btn-play-music">Bật nhạc 🎵</button>
 
 <script>
-  let testMode = true; // Đổi true để test ngày 4/8
+  let testMode = false; // Đổi true để test ngày 4/8
 
   function getNow() {
     return testMode ? new Date(2025,7,4,12,0,0) : new Date();
@@ -388,6 +388,7 @@
     setTimeout(() => flower.remove(),4600);
   }
 
+  // Tạo 50 hoa mỗi lần bấm nút, rơi lộn xộn, có delay
   function createManyFlowers(count=50) {
     for(let i=0; i<count; i++) {
       setTimeout(() => {
@@ -411,11 +412,11 @@
   }
 
   function startHeartsRain() {
-    if (!isBirthdayDay()) setInterval(createHeart, 100);
+    if(!isBirthdayDay()) setInterval(createHeart,100);
   }
 
   function startFlowerRain() {
-    setInterval(createFlower, 300);
+    setInterval(createFlower,300);
   }
 
   const btnPlayMusic = document.getElementById("btn-play-music");
@@ -438,6 +439,7 @@
 
   function autoplayBirthdayMusic() {
     if(!birthdayMusic) return;
+
     birthdayMusic.loop = true;
     birthdayMusic.currentTime = 0;
     const playPromise = birthdayMusic.play();
@@ -482,7 +484,7 @@
       popup.style.display = "block";
       isShowing = true;
     } else {
-      // popup vẫn hiện, reset timeout tránh ẩn sớm
+      // Khi popup đang hiện, reset timeout để giữ popup mở đủ 5 giây
       popup.style.display = "block";
     }
 
@@ -549,5 +551,4 @@
   });
 </script>
 </body>
-                                                              </html>
-  
+</html>
