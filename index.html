@@ -8,7 +8,7 @@
   <style>
     html, body {
       height: 100%;
-      overflow: hidden; /* Ẩn scroll dọc */
+      overflow: hidden;
       margin: 0; padding: 0;
     }
     body {
@@ -18,7 +18,7 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      position: fixed; /* Cố định trang */
+      position: fixed;
       width: 100vw;
       height: 100vh;
       user-select: none;
@@ -220,7 +220,7 @@
     }
     .flower {
       position: fixed;
-      pointer-events: none; /* hoa không chặn click */
+      pointer-events: none;
       user-select: none;
       animation: flowerFall 4.5s linear forwards;
       z-index: 997;
@@ -299,7 +299,7 @@
   <button id="btn-play-music">Bật nhạc 🎵</button>
 
 <script>
-  let testMode = false; // Đổi true để test ngày 4/8
+  let testMode = true; // Đổi true để test ngày 4/8
 
   function getNow() {
     return testMode ? new Date(2025,7,4,12,0,0) : new Date();
@@ -457,23 +457,23 @@
     }
   }
 
-  // Hàm showPopup chỉnh sửa đảm bảo hiện popup 5s độc lập âm thanh
+  // Fix hàm showPopup để popup độc lập 5s, âm thanh ko ảnh hưởng popup
   function showPopup() {
     const popup = document.getElementById("popup");
     const button = document.getElementById("btn-chucmung");
     const clickSoundNormal = document.getElementById("clickSound");
     const clickSoundBirthday = document.getElementById("birthdayClickSound");
 
+    // Chỉ phát âm thanh nếu audio chưa đang phát
     if(isBirthdayDay()) {
       createManyFlowers(50);
-      if(clickSoundBirthday) {
+      if(clickSoundBirthday && clickSoundBirthday.paused) {
         clickSoundBirthday.currentTime = 0;
-        // Phát âm thanh không ảnh hưởng popup
         clickSoundBirthday.play().catch(() => {});
       }
     } else {
       createManyHearts(50);
-      if(clickSoundNormal) {
+      if(clickSoundNormal && clickSoundNormal.paused) {
         clickSoundNormal.currentTime = 0;
         clickSoundNormal.play().catch(() => {});
       }
@@ -485,7 +485,7 @@
       popup.classList.add("show");
       isShowing = true;
     } else {
-      // Popup đang hiện, giữ visible
+      // Đảm bảo popup vẫn hiện khi spam nút
       popup.style.display = "block";
     }
 
