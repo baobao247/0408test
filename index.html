@@ -292,7 +292,7 @@
   <button id="btn-play-music" style="display:none; position: fixed; bottom: 14px; right: 14px; z-index: 3000; padding: 8px 14px; background:#ff66a3; color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold;">Bật nhạc 🎵</button>
 
 <script>
-  let testMode = true; // đổi true nếu muốn test luôn ngày 4/8
+  let testMode = false; // đổi true để test ngày 4/8
 
   function getNow() {
     return testMode ? new Date(2025, 7, 4, 12, 0, 0) : new Date();
@@ -382,17 +382,6 @@
     setTimeout(() => flower.remove(), 4600);
   }
 
-  function startFlowerRain() {
-    setInterval(createFlower, 300);
-  }
-
-  function createManyHearts(count = 100) {
-    for (let i = 0; i < count; i++) {
-      const delay = Math.random() * 2000;
-      setTimeout(() => createHeart(), delay);
-    }
-  }
-
   function createManyFlowers(count = 100) {
     for (let i = 0; i < count; i++) {
       setTimeout(() => {
@@ -408,11 +397,21 @@
     }
   }
 
+  function createManyHearts(count = 100) {
+    for (let i = 0; i < count; i++) {
+      const delay = Math.random() * 2000;
+      setTimeout(() => createHeart(), delay);
+    }
+  }
+
   function startHeartsRain() {
     if (!isBirthdayDay()) setInterval(createHeart, 100);
   }
 
-  // Toggle chức năng bật/tắt nhạc nền 4/8
+  function startFlowerRain() {
+    setInterval(createFlower, 300);
+  }
+
   const btnPlayMusic = document.getElementById("btn-play-music");
   const birthdayMusic = document.getElementById("birthdayMusic");
   function toggleMusic() {
@@ -458,7 +457,7 @@
     const clickSoundBirthday = document.getElementById("birthdayClickSound");
 
     if (isBirthdayDay()) {
-      createManyFlowers(100); // mỗi lần bấm nút sẽ rơi hoa lộn xộn đẹp
+      createManyFlowers(100);
       if (clickSoundBirthday && clickSoundBirthday.paused) {
         clickSoundBirthday.currentTime = 0;
         clickSoundBirthday.play();
@@ -481,11 +480,12 @@
     popupTimeout = setTimeout(() => {
       popup.classList.remove("show");
       popup.classList.add("hide");
-      isShowing = false;
       setTimeout(() => {
-        if (!isShowing) popup.style.display = "none";
+        popup.style.display = "none";
+        isShowing = false;
       }, 500);
     }, 5000);
+
     popup.style.display = "block";
 
     button.classList.add("bounce");
