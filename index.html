@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sinh nhật Linh (Sinn)</title>
   <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
   <style>
@@ -141,8 +141,8 @@
       background-color: #ff3385;
     }
     @keyframes bounce {
-      0%, 100% { transform: scale(1);}
-      50% { transform: scale(1.2);}
+      0%, 100% {transform: scale(1);}
+      50% {transform: scale(1.2);}
     }
     .bounce {
       animation: bounce 0.3s ease;
@@ -165,21 +165,34 @@
       max-width: 90vw;
       line-height: 1.5;
       box-sizing: border-box;
+      user-select: none;
     }
     .popup.show {
       display: block;
-      animation: fadeIn 0.5s ease forwards;
+      animation: fadeInPopup 0.5s ease forwards;
     }
     .popup.hide {
-      animation: fadeOut 0.5s ease forwards;
+      animation: fadeOutPopup 0.5s ease forwards;
     }
-    @keyframes fadeIn {
-      from {opacity:0; transform: translate(-50%, -60%) scale(0.9);}
-      to {opacity:1; transform: translate(-50%, -50%) scale(1);}
+    @keyframes fadeInPopup {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -60%) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
     }
-    @keyframes fadeOut {
-      from {opacity:1; transform: translate(-50%, -50%) scale(1);}
-      to {opacity:0; transform: translate(-50%, -60%) scale(0.9);}
+    @keyframes fadeOutPopup {
+      from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translate(-50%, -60%) scale(0.9);
+      }
     }
     .popup-gift {
       position: fixed;
@@ -199,16 +212,18 @@
       max-width: 90vw;
       line-height: 1.5;
       box-sizing: border-box;
+      user-select: none;
     }
     .popup-gift.show {
       display: block;
-      animation: fadeIn 0.5s ease forwards;
+      animation: fadeInPopup 0.5s ease forwards;
     }
     .popup-gift.hide {
-      animation: fadeOut 0.5s ease forwards;
+      animation: fadeOutPopup 0.5s ease forwards;
     }
     .heart {
-      width: 20px; height: 20px;
+      width: 20px;
+      height: 20px;
       position: fixed;
       background: url('https://twemoji.maxcdn.com/v/latest/svg/2764.svg') no-repeat center;
       background-size: contain;
@@ -218,12 +233,12 @@
       top: -20px;
     }
     @keyframes fall {
-      0% { transform: translateY(0); opacity: 1;}
-      100% { transform: translateY(100vh); opacity: 0;}
+      0% {transform: translateY(0); opacity: 1;}
+      100% {transform: translateY(100vh); opacity: 0;}
     }
     @keyframes flowerFall {
-      0% { transform: translateY(0) rotate(0deg); opacity: 1;}
-      100% { transform: translateY(100vh) rotate(360deg); opacity: 0;}
+      0% {transform: translateY(0) rotate(0deg); opacity: 1;}
+      100% {transform: translateY(100vh) rotate(360deg); opacity: 0;}
     }
     .flower {
       position: fixed;
@@ -237,26 +252,27 @@
     .cat-bg-icon {
       position: absolute;
       z-index: 1;
-      width: 42px; height: 42px;
+      width: 42px;
+      height: 42px;
       opacity: 0.14;
       pointer-events: none;
       user-select: none;
       transition: transform 0.5s;
     }
     #btn-play-music {
-      display:none;
+      display: none;
       position: fixed;
       bottom: 14px;
       right: 14px;
       z-index: 4000;
       padding: 8px 14px;
-      background:#ff66a3;
-      color:white;
-      border:none;
-      border-radius:12px;
-      cursor:pointer;
+      background: #ff66a3;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
       font-weight: bold;
-      user-select:none;
+      user-select: none;
     }
   </style>
 </head>
@@ -265,7 +281,7 @@
     <h1>Sinh nhật Hoàng Linh (Sin)🎉🎂</h1>
     <div class="birthday-date-row">
       <p id="birthday-date">...</p>
-      <img id="gift-icon" title="Mở quà sinh nhật!" style="display:none;" 
+      <img id="gift-icon" title="Mở quà sinh nhật!" style="display:none;"
            src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f381.svg" alt="Quà sinh nhật" />
     </div>
   </div>
@@ -281,32 +297,32 @@
 
   <div class="popup" id="popup">Chúc mừng sinh nhật Linhh 🎉🎂</div>
   <div class="popup-gift" id="popup-gift">
-    Chúc mừng sinh nhật Sinn!!! 🎉🎂<br/>
-    Bao chúc Sinn tuổi mới hạnh phúc, mạnh khoẻ, học giỏi,<br/>
-    đậu nguyện vọng 1 vào năm sau, luonvuituoi,<br/>
-    số dư luôn "đồng biến", đạt được mục tiêu đề ra,<br/>
+    Chúc mừng sinh nhật Sinn!!! 🎉🎂<br />
+    Bao chúc Sinn tuổi mới hạnh phúc, mạnh khoẻ, học giỏi,<br />
+    đậu nguyện vọng 1 vào năm sau, luonvuituoi,<br />
+    số dư luôn "đồng biến", đạt được mục tiêu đề ra,<br />
     và có 1 ngày sinh nhật thật đáng nhớ nhaaaa!!!
   </div>
 
-  <!-- Nhạc nền ngày 4/8 -->
-  <audio id="birthdayMusic" 
-         src="https://github.com/baobao247/0408/raw/refs/heads/main/tiramisu-cake-original-mix-128-ytshorts.savetube.me.mp3" 
+  <!-- Nhạc nền -->
+  <audio id="birthdayMusic"
+         src="https://github.com/baobao247/0408/raw/refs/heads/main/tiramisu-cake-original-mix-128-ytshorts.savetube.me.mp3"
          preload="auto"></audio>
 
   <!-- Âm thanh bấm nút ngày thường -->
-  <audio id="clickSound" 
-         src="https://github.com/baobao247/0408/raw/refs/heads/main/happy-birthday-to-you-bossa-nova-style-arrangement-21399.mp3" 
+  <audio id="clickSound"
+         src="https://github.com/baobao247/0408/raw/refs/heads/main/happy-birthday-to-you-bossa-nova-style-arrangement-21399.mp3"
          preload="auto"></audio>
 
-  <!-- Âm thanh bấm nút ngày 4/8 (party horn) -->
-  <audio id="birthdayClickSound" 
-         src="https://github.com/baobao247/0408/raw/refs/heads/main/party-horn-sound-effect-128-ytshorts.savetube.me.mp3" 
+  <!-- Âm thanh bấm nút party horn ngày 4/8 -->
+  <audio id="birthdayClickSound"
+         src="https://github.com/baobao247/0408/raw/refs/heads/main/party-horn-sound-effect-128-ytshorts.savetube.me.mp3"
          preload="auto"></audio>
 
   <button id="btn-play-music">Bật nhạc 🎵</button>
 
 <script>
-  let testMode = true; // Thay thành true để test ngày 4/8
+  let testMode = true; // Đổi true để test ngày 4/8 nếu muốn
 
   function getNow() {
     return testMode ? new Date(2025,7,4,12,0,0) : new Date();
@@ -316,13 +332,9 @@
     const currentYear = now.getFullYear();
     const birthdayStart = new Date(currentYear,7,4,0,0,0);
     const birthdayEnd = new Date(currentYear,7,5,0,0,0);
-    if (now < birthdayStart) {
-      return { target: birthdayStart, year: currentYear };
-    } else if (now >= birthdayStart && now < birthdayEnd) {
-      return null;
-    } else {
-      return { target: new Date(currentYear+1,7,4,0,0,0), year: currentYear+1 };
-    }
+    if (now < birthdayStart) return { target: birthdayStart, year: currentYear };
+    if (now >= birthdayStart && now < birthdayEnd) return null;
+    return { target: new Date(currentYear+1,7,4,0,0,0), year: currentYear+1 };
   }
 
   function isBirthdayDay() {
@@ -454,54 +466,54 @@
     }
   }
 
-  // Hàm showPopup y như popup quà, sách chặt trạng thái để popup hiện hết 5 giây
   function showPopup() {
     const popup = document.getElementById("popup");
     const btn = document.getElementById("btn-chucmung");
     const clickSoundNormal = document.getElementById("clickSound");
     const clickSoundBirthday = document.getElementById("birthdayClickSound");
 
-    // Cập nhật nội dung popup theo ngày 4/8
     if (isBirthdayDay()) {
-      popup.innerHTML = "🌸Chúc mừng sinh nhật Linhh🌸";
-    } else {
-      popup.innerHTML = "Chúc mừng sinh nhật Linhh 🎉🎂";
-    }
-
-    // Hiệu ứng âm thanh và hoa/tim
-    if (isBirthdayDay()) {
-      createManyFlowers(50);
+      // Ngày 4/8: phát âm thanh party horn
       if (clickSoundBirthday && clickSoundBirthday.paused) {
         clickSoundBirthday.currentTime = 0;
         clickSoundBirthday.play().catch(() => {});
       }
-    } else {
-      createManyHearts(50);
-      if (clickSoundNormal && clickSoundNormal.paused) {
-        clickSoundNormal.currentTime = 0;
-        clickSoundNormal.play().catch(() => {});
-      }
+      // Vẫn tạo hiệu ứng hoa rơi nhưng KHÔNG hiện popup
+      createManyFlowers(50);
+      return; // Không hiện popup ngày 4/8
     }
 
-    // Nếu popup chưa hiện thì bật, bật animation fadeIn (class show)
+    // Ngày thường: phát nhạc bình thường và hiện popup
+    if (clickSoundNormal && clickSoundNormal.paused) {
+      clickSoundNormal.currentTime = 0;
+      clickSoundNormal.play().catch(() => {});
+    }
+
+    // Tạo hiệu ứng tim rơi ngày thường
+    createManyHearts(50);
+
+    // Nội dung popup giữ nguyên
+    popup.innerHTML = "Chúc mừng sinh nhật Linhh 🎉🎂";
+
     if (!isPopupShowing) {
-      isPopupShowing = true;
       popup.style.display = "block";
-      popup.classList.remove("hide");
-      popup.classList.add("show");
-
-      // Đặt timeout ẩn popup sau 5 giây với animation fadeOut (class hide)
-      popupTimeout = setTimeout(() => {
-        popup.classList.remove("show");
-        popup.classList.add("hide");
-        setTimeout(() => {
-          popup.style.display = "none";
-          isPopupShowing = false;
-        }, 500); // thời gian animation fadeOut
-      }, 5000);
+      requestAnimationFrame(() => {
+        popup.classList.add("show");
+        popup.classList.remove("hide");
+      });
+      isPopupShowing = true;
     }
 
-    // Hiệu ứng bounce nút
+    if (popupTimeout) clearTimeout(popupTimeout);
+    popupTimeout = setTimeout(() => {
+      popup.classList.remove("show");
+      popup.classList.add("hide");
+      setTimeout(() => {
+        popup.style.display = "none";
+        isPopupShowing = false;
+      }, 500);
+    }, 5000);
+
     btn.classList.add("bounce");
     btn.addEventListener("animationend", () => {
       btn.classList.remove("bounce");
@@ -509,24 +521,26 @@
   }
 
   function showGiftPopup() {
-    const popup = document.getElementById("popup-gift");
-    if(!popup) return;
-    popup.classList.remove("hide");
-    popup.classList.add("show");
-    popup.style.display = "block";
+    const popupGift = document.getElementById("popup-gift");
+    if (!popupGift) return;
+    popupGift.classList.remove("hide");
+    popupGift.classList.add("show");
+    popupGift.style.display = "block";
     setTimeout(() => {
-      popup.classList.remove("show");
-      popup.classList.add("hide");
-      setTimeout(() => { popup.style.display = "none"; }, 500);
+      popupGift.classList.remove("show");
+      popupGift.classList.add("hide");
+      setTimeout(() => {
+        popupGift.style.display = "none";
+      }, 500);
     }, 9900);
   }
 
-  window.addEventListener('DOMContentLoaded', () => {
+  window.addEventListener("DOMContentLoaded", () => {
     const giftIcon = document.getElementById("gift-icon");
 
-    if(isBirthdayDay()) {
+    if (isBirthdayDay()) {
       autoplayBirthdayMusic();
-      if(giftIcon) {
+      if (giftIcon) {
         giftIcon.style.display = "inline-block";
         giftIcon.addEventListener("click", showGiftPopup);
       }
@@ -536,24 +550,23 @@
       startHeartsRain();
     }
 
-    function addCatIconsToBackground(count=32) {
-      document.querySelectorAll('.cat-bg-icon').forEach(e => e.remove());
+    function addCatIconsToBackground(count = 32) {
+      document.querySelectorAll(".cat-bg-icon").forEach(e => e.remove());
       const body = document.body;
-      const {innerWidth: ww, innerHeight: wh} = window;
-      for(let i=0; i<count; i++) {
-        const cat = document.createElement('img');
-        cat.className = 'cat-bg-icon';
-        cat.src = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f431.svg';
-        cat.style.left = Math.random()*(ww-48) + 'px';
-        cat.style.top = Math.random()*(wh-48) + 'px';
-        cat.style.transform = `rotate(${Math.random()*60-30}deg)`;
+      const { innerWidth: ww, innerHeight: wh } = window;
+      for (let i = 0; i < count; i++) {
+        const cat = document.createElement("img");
+        cat.className = "cat-bg-icon";
+        cat.src = "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f431.svg";
+        cat.style.left = Math.random() * (ww - 48) + "px";
+        cat.style.top = Math.random() * (wh - 48) + "px";
+        cat.style.transform = `rotate(${Math.random() * 60 - 30}deg)`;
         body.appendChild(cat);
       }
     }
     addCatIconsToBackground();
-    window.addEventListener('resize', () => addCatIconsToBackground(32));
+    window.addEventListener("resize", () => addCatIconsToBackground(32));
   });
 </script>
 </body>
-    </html>
-    
+</html>
