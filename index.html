@@ -6,16 +6,31 @@
   <title>Sinh nhật Linh (Sinn)</title>
   <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
   <style>
+    html, body {
+      height: 100%;
+      overflow: hidden; /* Ẩn scroll dọc */
+      margin: 0; padding: 0;
+    }
     body {
-      margin: 0; padding:0;
-      background-color: #ffe6f0;
       font-family: 'Patrick Hand', cursive;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      min-height: 100vh; overflow-x: hidden; position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      position: fixed; /* Cố định trang */
+      width: 100vw;
+      height: 100vh;
+      user-select: none;
+      background-color: #ffe6f0;
     }
     .title-container {
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-      margin-top: 0; margin-bottom: 0; z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      z-index: 2;
     }
     h1 {
       font-size: clamp(2rem, 5vw, 3rem);
@@ -26,19 +41,22 @@
       user-select: none;
     }
     .birthday-date-row {
-      display: flex; align-items: center; gap: 10px; position: relative; z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 2;
     }
     #birthday-date {
       color: #d6336c;
       font-size: 1.2rem;
-      font-family: 'Patrick Hand', cursive;
       text-align: center;
       user-select: none;
       margin: 0;
       vertical-align: middle;
     }
     #gift-icon {
-      width: 32px; height: 32px;
+      width: 32px;
+      height: 32px;
       cursor: pointer;
       user-select: none;
       transition: transform 0.15s;
@@ -49,21 +67,26 @@
       filter: brightness(1.15) drop-shadow(0 0 6px #ffe06699);
     }
     .countdown-container {
-      display: flex; flex-wrap: wrap; justify-content: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: clamp(6px, 2vw, 12px);
       margin: 20px auto;
       max-width: 400px;
       z-index: 2;
     }
     .time-box {
-      border: 2px solid #ff1493; border-radius: 12px;
+      border: 2px solid #ff1493;
+      border-radius: 12px;
       padding: clamp(6px, 2vw, 12px) clamp(8px, 3vw, 14px);
-      display: flex; flex-direction: column; align-items: center;
-      width: clamp(50px, 12vw, 70px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       background-color: #ffe6f0;
       box-shadow: 0 2px 6px rgba(255, 20, 147, 0.3);
       box-sizing: border-box;
       user-select: none;
+      width: clamp(50px, 12vw, 70px);
     }
     .time-box .number {
       font-size: clamp(1.4rem, 4vw, 2rem);
@@ -79,10 +102,14 @@
     }
     @media (max-width: 350px) {
       .countdown-container {
-        gap: 6px; margin: 10px 0; justify-content: center;
+        gap: 6px;
+        margin: 10px 0;
+        justify-content: center;
       }
       .time-box {
-        width: 45px; padding: 6px 8px; margin-bottom: 8px;
+        width: 45px;
+        padding: 6px 8px;
+        margin-bottom: 8px;
       }
       .time-box .number {
         font-size: 1.4rem;
@@ -91,7 +118,8 @@
         font-size: 0.7rem;
       }
       #gift-icon {
-        width: 26px; height: 26px;
+        width: 26px;
+        height: 26px;
       }
     }
     button {
@@ -192,7 +220,7 @@
     }
     .flower {
       position: fixed;
-      pointer-events: none;
+      pointer-events: none; /* hoa không chặn click */
       user-select: none;
       animation: flowerFall 4.5s linear forwards;
       z-index: 997;
@@ -208,7 +236,6 @@
       user-select: none;
       transition: transform 0.5s;
     }
-    /* Nút bật/tắt nhạc */
     #btn-play-music {
       display:none;
       position: fixed;
@@ -231,7 +258,7 @@
     <h1>Sinh nhật Hoàng Linh (Sin)🎉🎂</h1>
     <div class="birthday-date-row">
       <p id="birthday-date">...</p>
-      <img id="gift-icon" title="Mở quà sinh nhật!" style="display:none;" 
+      <img id="gift-icon" title="Mở quà sinh nhật!" style="display:none;"
            src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f381.svg" alt="Quà sinh nhật" />
     </div>
   </div>
@@ -255,39 +282,39 @@
   </div>
 
   <!-- Nhạc nền ngày 4/8 -->
-  <audio id="birthdayMusic" 
-         src="https://github.com/baobao247/0408/raw/refs/heads/main/tiramisu-cake-original-mix-128-ytshorts.savetube.me.mp3" 
+  <audio id="birthdayMusic"
+         src="https://github.com/baobao247/0408/raw/refs/heads/main/tiramisu-cake-original-mix-128-ytshorts.savetube.me.mp3"
          preload="auto"></audio>
 
   <!-- Âm thanh bấm nút ngày thường (âm thanh cũ) -->
-  <audio id="clickSound" 
-         src="https://github.com/baobao247/0408/raw/refs/heads/main/happy-birthday-to-you-bossa-nova-style-arrangement-21399.mp3" 
+  <audio id="clickSound"
+         src="https://github.com/baobao247/0408/raw/refs/heads/main/happy-birthday-to-you-bossa-nova-style-arrangement-21399.mp3"
          preload="auto"></audio>
 
   <!-- Âm thanh bấm nút ngày 4/8 (party horn) -->
-  <audio id="birthdayClickSound" 
-         src="https://github.com/baobao247/0408/raw/refs/heads/main/party-horn-sound-effect-128-ytshorts.savetube.me.mp3" 
+  <audio id="birthdayClickSound"
+         src="https://github.com/baobao247/0408/raw/refs/heads/main/party-horn-sound-effect-128-ytshorts.savetube.me.mp3"
          preload="auto"></audio>
 
   <button id="btn-play-music">Bật nhạc 🎵</button>
 
 <script>
-  let testMode = true; // đổi true để test ngày 4/8
+  let testMode = true; // Đổi true để test ngày 4/8
 
   function getNow() {
-    return testMode ? new Date(2025, 7, 4, 12, 0, 0) : new Date();
+    return testMode ? new Date(2025,7,4,12,0,0) : new Date();
   }
 
   function getNextBirthdayTarget(now) {
     const currentYear = now.getFullYear();
-    const birthdayStart = new Date(currentYear, 7, 4, 0, 0, 0);
-    const birthdayEnd = new Date(currentYear, 7, 5, 0, 0, 0);
+    const birthdayStart = new Date(currentYear,7,4,0,0,0);
+    const birthdayEnd = new Date(currentYear,7,5,0,0,0);
     if (now < birthdayStart) {
       return { target: birthdayStart, year: currentYear };
     } else if (now >= birthdayStart && now < birthdayEnd) {
       return null;
     } else {
-      return { target: new Date(currentYear + 1, 7, 4, 0, 0, 0), year: currentYear + 1 };
+      return { target: new Date(currentYear+1,7,4,0,0,0), year: currentYear+1 };
     }
   }
 
@@ -323,19 +350,18 @@
 
     const diff = result.target - now;
     if (diff <= 0) {
-      ["days", "hours", "minutes", "seconds"].forEach(id => {
+      ["days","hours","minutes","seconds"].forEach(id => {
         document.getElementById(id).textContent = 0;
       });
       return;
     }
 
-    document.getElementById("days").textContent = Math.floor(diff / (1000 * 60 * 60 * 24));
-    document.getElementById("hours").textContent = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    document.getElementById("minutes").textContent = Math.floor((diff / (1000 * 60)) % 60);
-    document.getElementById("seconds").textContent = Math.floor((diff / 1000) % 60);
+    document.getElementById("days").textContent = Math.floor(diff/(1000*60*60*24));
+    document.getElementById("hours").textContent = Math.floor((diff/(1000*60*60))%24);
+    document.getElementById("minutes").textContent = Math.floor((diff/(1000*60))%60);
+    document.getElementById("seconds").textContent = Math.floor((diff/1000)%60);
   }
-
-  setInterval(updateCountdown, 1000);
+  setInterval(updateCountdown,1000);
   updateCountdown();
 
   let popupTimeout;
@@ -344,43 +370,42 @@
   function createHeart() {
     const heart = document.createElement("div");
     heart.classList.add("heart");
-    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.left = Math.random()*100 + "vw";
     heart.style.top = "-20px";
-    heart.style.animationDuration = (2 + Math.random() * 2) + "s";
+    heart.style.animationDuration = (2 + Math.random()*2) + "s";
     document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 3000);
+    setTimeout(() => heart.remove(),3000);
   }
 
   function createFlower() {
     const flower = document.createElement("div");
     flower.textContent = "🌸";
     flower.className = "flower";
-    flower.style.left = Math.random() * 100 + "vw";
+    flower.style.left = Math.random()*100 +"vw";
     flower.style.top = "-40px";
-    flower.style.fontSize = (28 + Math.random() * 24) + "px";
+    flower.style.fontSize = (28 + Math.random()*24) + "px";
     document.body.appendChild(flower);
-    setTimeout(() => flower.remove(), 4600);
+    setTimeout(() => flower.remove(),4600);
   }
 
-  // Tạo 50 hoa rơi lộn xộn riêng mỗi lần bấm nút
-  function createManyFlowers(count = 50) {
-    for (let i = 0; i < count; i++) {
+  function createManyFlowers(count=50) {
+    for(let i=0; i<count; i++) {
       setTimeout(() => {
         const flower = document.createElement("div");
         flower.textContent = "🌸";
         flower.className = "flower";
-        flower.style.left = (Math.random() * 100) + "vw";
+        flower.style.left = (Math.random()*100) + "vw";
         flower.style.top = "-40px";
-        flower.style.fontSize = (28 + Math.random() * 24) + "px";
+        flower.style.fontSize = (28 + Math.random()*24) + "px";
         document.body.appendChild(flower);
         setTimeout(() => flower.remove(), 4600);
-      }, Math.random() * 2500);
+      }, Math.random()*2500);
     }
   }
 
-  function createManyHearts(count = 50) {
-    for (let i = 0; i < count; i++) {
-      const delay = Math.random() * 2000;
+  function createManyHearts(count=50) {
+    for(let i=0; i<count; i++) {
+      const delay = Math.random()*2000;
       setTimeout(() => createHeart(), delay);
     }
   }
@@ -395,35 +420,35 @@
 
   const btnPlayMusic = document.getElementById("btn-play-music");
   const birthdayMusic = document.getElementById("birthdayMusic");
+
   function toggleMusic() {
-    if (!birthdayMusic) return;
-    if (birthdayMusic.paused) {
+    if(!birthdayMusic) return;
+    if(birthdayMusic.paused) {
       birthdayMusic.play();
-      if (btnPlayMusic) btnPlayMusic.textContent = "Tắt nhạc 🔇";
+      if(btnPlayMusic) btnPlayMusic.textContent = "Tắt nhạc 🔇";
     } else {
       birthdayMusic.pause();
-      if (btnPlayMusic) btnPlayMusic.textContent = "Bật nhạc 🎵";
+      if(btnPlayMusic) btnPlayMusic.textContent = "Bật nhạc 🎵";
     }
   }
-  if (btnPlayMusic) {
+
+  if(btnPlayMusic) {
     btnPlayMusic.addEventListener("click", toggleMusic);
   }
 
   function autoplayBirthdayMusic() {
-    if (!birthdayMusic) return;
-
+    if(!birthdayMusic) return;
     birthdayMusic.loop = true;
     birthdayMusic.currentTime = 0;
     const playPromise = birthdayMusic.play();
-
-    if (playPromise !== undefined) {
+    if(playPromise !== undefined) {
       playPromise.then(() => {
-        if (btnPlayMusic) {
+        if(btnPlayMusic) {
           btnPlayMusic.style.display = "block";
           btnPlayMusic.textContent = "Tắt nhạc 🔇";
         }
       }).catch(() => {
-        if (btnPlayMusic) {
+        if(btnPlayMusic) {
           btnPlayMusic.style.display = "block";
           btnPlayMusic.textContent = "Bật nhạc 🎵";
         }
@@ -437,25 +462,30 @@
     const clickSoundNormal = document.getElementById("clickSound");
     const clickSoundBirthday = document.getElementById("birthdayClickSound");
 
-    if (isBirthdayDay()) {
+    if(isBirthdayDay()) {
       createManyFlowers(50);
-      if (clickSoundBirthday && clickSoundBirthday.paused) {
+      if(clickSoundBirthday && clickSoundBirthday.paused) {
         clickSoundBirthday.currentTime = 0;
         clickSoundBirthday.play();
       }
     } else {
       createManyHearts(50);
-      if (clickSoundNormal && clickSoundNormal.paused) {
+      if(clickSoundNormal && clickSoundNormal.paused) {
         clickSoundNormal.currentTime = 0;
         clickSoundNormal.play();
       }
     }
 
-    if (!isShowing) {
+    if(!isShowing) {
       popup.classList.remove("hide");
       popup.classList.add("show");
+      popup.style.display = "block";
       isShowing = true;
+    } else {
+      // popup vẫn hiện, reset timeout tránh ẩn sớm
+      popup.style.display = "block";
     }
+
     clearTimeout(popupTimeout);
     popupTimeout = setTimeout(() => {
       popup.classList.remove("show");
@@ -466,17 +496,15 @@
       }, 500);
     }, 5000);
 
-    popup.style.display = "block";
-
     button.classList.add("bounce");
     button.addEventListener("animationend", () => {
       button.classList.remove("bounce");
-    }, { once: true });
+    }, {once: true});
   }
 
   function showGiftPopup() {
     const popup = document.getElementById("popup-gift");
-    if (!popup) return;
+    if(!popup) return;
     popup.classList.remove("hide");
     popup.classList.add("show");
     popup.style.display = "block";
@@ -490,9 +518,9 @@
   window.addEventListener('DOMContentLoaded', () => {
     const giftIcon = document.getElementById("gift-icon");
 
-    if (isBirthdayDay()) {
+    if(isBirthdayDay()) {
       autoplayBirthdayMusic();
-      if (giftIcon) {
+      if(giftIcon) {
         giftIcon.style.display = "inline-block";
         giftIcon.addEventListener("click", showGiftPopup);
       }
@@ -502,17 +530,17 @@
       startHeartsRain();
     }
 
-    function addCatIconsToBackground(count = 32) {
+    function addCatIconsToBackground(count=32) {
       document.querySelectorAll('.cat-bg-icon').forEach(e => e.remove());
       const body = document.body;
-      const { innerWidth: ww, innerHeight: wh } = window;
-      for (let i = 0; i < count; i++) {
+      const {innerWidth: ww, innerHeight: wh} = window;
+      for(let i=0; i<count; i++) {
         const cat = document.createElement('img');
         cat.className = 'cat-bg-icon';
         cat.src = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f431.svg';
         cat.style.left = Math.random() * (ww - 48) + 'px';
         cat.style.top = Math.random() * (wh - 48) + 'px';
-        cat.style.transform = `rotate(${Math.random() * 60 - 30}deg)`;
+        cat.style.transform = `rotate(${Math.random()*60 - 30}deg)`;
         body.appendChild(cat);
       }
     }
@@ -521,5 +549,5 @@
   });
 </script>
 </body>
-  </html>
+                                                              </html>
   
