@@ -6,7 +6,6 @@
   <title>Sinh nhật Linh (Sinn)</title>
   <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
   <style>
-    /* Body & layout */
     body {
       margin: 0;
       padding: 0;
@@ -217,6 +216,10 @@
       pointer-events: none;
       top: -20px;
     }
+    @keyframes fall {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
     /* Hoa rơi với animation xoay */
     @keyframes flowerFall {
       0% {
@@ -296,225 +299,231 @@
   <!-- Nút bật nhạc nếu trình duyệt chặn autoplay -->
   <button id="btn-play-music" style="display:none; position: fixed; bottom: 14px; right: 14px; z-index: 3000; padding: 8px 14px; background:#ff66a3; color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold;">Bật nhạc 🎵</button>
 
-  <script>
-    let testMode = true; // Đổi true để test ngày 4/8
+<script>
+  let testMode = false; // bật true để test ngày 4/8
 
-    function getNow() {
-      return testMode ? new Date(2025, 7, 4, 12, 0, 0) : new Date();
+  function getNow() {
+    return testMode ? new Date(2025, 7, 4, 12, 0, 0) : new Date();
+  }
+
+  function getNextBirthdayTarget(now) {
+    const currentYear = now.getFullYear();
+    const birthdayStart = new Date(currentYear, 7, 4, 0, 0, 0);
+    const birthdayEnd = new Date(currentYear, 7, 5, 0, 0, 0);
+
+    if (now < birthdayStart) {
+      return { target: birthdayStart, year: currentYear };
+    } else if (now >= birthdayStart && now < birthdayEnd) {
+      return null;
+    } else {
+      return { target: new Date(currentYear + 1, 7, 4, 0, 0, 0), year: currentYear + 1 };
     }
+  }
 
-    function getNextBirthdayTarget(now) {
-      const currentYear = now.getFullYear();
-      const birthdayStart = new Date(currentYear, 7, 4, 0, 0, 0);
-      const birthdayEnd = new Date(currentYear, 7, 5, 0, 0, 0);
-      if (now < birthdayStart) {
-        return { target: birthdayStart, year: currentYear };
-      } else if (now >= birthdayStart && now < birthdayEnd) {
-        return null;
-      } else {
-        return { target: new Date(currentYear + 1, 7, 4, 0, 0, 0), year: currentYear + 1 };
-      }
-    }
+  function isBirthdayDay() {
+    const now = getNow();
+    return now.getMonth() === 7 && now.getDate() === 4;
+  }
 
-    function isBirthdayDay() {
-      const now = getNow();
-      return now.getMonth() === 7 && now.getDate() === 4;
-    }
+  function updateCountdown() {
+    const now = getNow();
+    const ctn = document.getElementById("countdown");
+    const birthdayDateElem = document.getElementById("birthday-date");
+    const popup = document.getElementById("popup");
+    const giftIcon = document.getElementById("gift-icon");
+    const result = getNextBirthdayTarget(now);
 
-    function updateCountdown() {
-      const now = getNow();
-      const ctn = document.getElementById("countdown");
-      const birthdayDateElem = document.getElementById("birthday-date");
-      const popup = document.getElementById("popup");
-      const giftIcon = document.getElementById("gift-icon");
-      const result = getNextBirthdayTarget(now);
+    if (result === null) {
+      ctn.style.display = "none";
+      birthdayDateElem.textContent = `04/08/${now.getFullYear()}`;
+      giftIcon.style.display = "inline-block";
 
-      if (result === null) {
-        ctn.style.display = "none";
-        birthdayDateElem.textContent = `04/08/${now.getFullYear()}`;
-        giftIcon.style.display = "inline-block";
-
-        if (popup.classList.contains("show")) {
-          popup.classList.remove("show");
-          popup.classList.add("hide");
-          setTimeout(() => { popup.style.display = "none"; }, 500);
-        }
-        return;
-      }
-
-      birthdayDateElem.textContent = `04/08/${result.year}`;
-      ctn.style.display = "flex";
-      giftIcon.style.display = "none";
-
-      const diff = result.target - now;
-      if (diff <= 0) {
-        ["days", "hours", "minutes", "seconds"].forEach(id => {
-          document.getElementById(id).textContent = 0;
-        });
-        return;
-      }
-
-      document.getElementById("days").textContent = Math.floor(diff / (1000 * 60 * 60 * 24));
-      document.getElementById("hours").textContent = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      document.getElementById("minutes").textContent = Math.floor((diff / (1000 * 60)) % 60);
-      document.getElementById("seconds").textContent = Math.floor((diff / 1000) % 60);
-    }
-
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
-
-    let popupTimeout;
-    let isShowing = false;
-
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.classList.add("heart");
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.top = "-20px";
-      heart.style.animationDuration = (2 + Math.random() * 2) + "s";
-      document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 3000);
-    }
-
-    function createFlower() {
-      const flower = document.createElement("div");
-      flower.textContent = "🌸";
-      flower.className = "flower";
-      flower.style.left = Math.random() * 100 + "vw";
-      flower.style.top = "-40px";
-      flower.style.fontSize = (28 + Math.random() * 24) + "px";
-      document.body.appendChild(flower);
-      setTimeout(() => flower.remove(), 4600);
-    }
-
-    function startFlowerRain() {
-      setInterval(createFlower, 300);
-    }
-
-    function createManyHearts(count = 100) {
-      for (let i = 0; i < count; i++) {
-        const delay = Math.random() * 2000;
-        setTimeout(() => createHeart(), delay);
-      }
-    }
-
-    function startHeartsRain() {
-      if (!isBirthdayDay()) setInterval(createHeart, 100);
-    }
-
-    function autoplayBirthdayMusic() {
-      const music = document.getElementById("birthdayMusic");
-      if (!music) return;
-
-      music.currentTime = 0;
-      const playPromise = music.play();
-
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          let btnPlay = document.getElementById("btn-play-music");
-          if (btnPlay) btnPlay.style.display = "none";
-        }).catch(() => {
-          let btnPlay = document.getElementById("btn-play-music");
-          if (btnPlay) {
-            btnPlay.style.display = "block";
-            btnPlay.onclick = () => {
-              music.play();
-              btnPlay.style.display = "none";
-            }
-          }
-        });
-      }
-    }
-
-    function showPopup() {
-      const popup = document.getElementById("popup");
-      const button = document.getElementById("btn-chucmung");
-      const clickSoundNormal = document.getElementById("clickSound");
-      const clickSoundBirthday = document.getElementById("birthdayClickSound");
-
-      if (isBirthdayDay()) {
-        for(let i=0; i<100; i++) setTimeout(createFlower, Math.random() * 2000);
-        if (clickSoundBirthday && clickSoundBirthday.paused) {
-          clickSoundBirthday.currentTime = 0;
-          clickSoundBirthday.play();
-        }
-      } else {
-        createManyHearts(100);
-        if (clickSoundNormal && clickSoundNormal.paused) {
-          clickSoundNormal.currentTime = 0;
-          clickSoundNormal.play();
-        }
-      }
-
-      if (!isShowing) {
-        popup.classList.remove("hide");
-        popup.classList.add("show");
-        isShowing = true;
-      }
-      clearTimeout(popupTimeout);
-      popupTimeout = setTimeout(() => {
-        popup.classList.remove("show");
-        popup.classList.add("hide");
-        isShowing = false;
-        setTimeout(() => {
-          if (!isShowing) popup.style.display = "none";
-        }, 500);
-      }, 5000);
-      popup.style.display = "block";
-
-      button.classList.add("bounce");
-      button.addEventListener("animationend", () => {
-        button.classList.remove("bounce");
-      }, { once: true });
-    }
-
-    function showGiftPopup() {
-      const popup = document.getElementById("popup-gift");
-      if (!popup) return;
-      popup.classList.remove("hide");
-      popup.classList.add("show");
-      popup.style.display = "block";
-      setTimeout(() => {
+      if (popup.classList.contains("show")) {
         popup.classList.remove("show");
         popup.classList.add("hide");
         setTimeout(() => { popup.style.display = "none"; }, 500);
-      }, 9900);
+      }
+      return;
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const giftIcon = document.getElementById("gift-icon");
+    birthdayDateElem.textContent = `04/08/${result.year}`;
+    ctn.style.display = "flex";
+    giftIcon.style.display = "none";
 
-      if (isBirthdayDay()) {
-        autoplayBirthdayMusic();
-        if (giftIcon) {
-          giftIcon.style.display = "inline-block";
-          giftIcon.addEventListener("click", showGiftPopup);
+    const diff = result.target - now;
+    if (diff <= 0) {
+      ["days", "hours", "minutes", "seconds"].forEach(id => {
+        document.getElementById(id).textContent = 0;
+      });
+      return;
+    }
+
+    document.getElementById("days").textContent = Math.floor(diff / (1000 * 60 * 60 * 24));
+    document.getElementById("hours").textContent = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    document.getElementById("minutes").textContent = Math.floor((diff / (1000 * 60)) % 60);
+    document.getElementById("seconds").textContent = Math.floor((diff / 1000) % 60);
+  }
+
+  setInterval(updateCountdown, 1000);
+  updateCountdown();
+
+  let popupTimeout;
+  let isShowing = false;
+
+  function createHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.top = "-20px";
+    heart.style.animationDuration = (2 + Math.random() * 2) + "s";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 3000);
+  }
+
+  function createFlower() {
+    const flower = document.createElement("div");
+    flower.textContent = "🌸";
+    flower.className = "flower";
+    flower.style.left = Math.random() * 100 + "vw";
+    flower.style.top = "-40px";
+    flower.style.fontSize = (28 + Math.random() * 24) + "px";
+    document.body.appendChild(flower);
+    setTimeout(() => flower.remove(), 4600);
+  }
+
+  function startFlowerRain() {
+    setInterval(createFlower, 300);
+  }
+
+  function createManyHearts(count = 100) {
+    for (let i = 0; i < count; i++) {
+      const delay = Math.random() * 2000;
+      setTimeout(() => createHeart(), delay);
+    }
+  }
+
+  function startHeartsRain() {
+    if (!isBirthdayDay()) setInterval(createHeart, 100);
+  }
+
+  function autoplayBirthdayMusic() {
+    const music = document.getElementById("birthdayMusic");
+    if (!music) return;
+
+    music.loop = true;
+
+    music.currentTime = 0;
+    const playPromise = music.play();
+
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        const btnPlay = document.getElementById("btn-play-music");
+        if (btnPlay) btnPlay.style.display = "none";
+      }).catch(() => {
+        const btnPlay = document.getElementById("btn-play-music");
+        if (btnPlay) {
+          btnPlay.style.display = "block";
+          btnPlay.onclick = () => {
+            music.play();
+            btnPlay.style.display = "none";
+          }
         }
-        startFlowerRain();
-      } else {
-        giftIcon.style.display = "none";
-        startHeartsRain();
-      }
+      });
+    }
+  }
 
-      function addCatIconsToBackground(count = 32) {
-        document.querySelectorAll('.cat-bg-icon').forEach(e => e.remove());
-        const body = document.body;
-        const { innerWidth: ww, innerHeight: wh } = window;
-        for (let i = 0; i < count; i++) {
-          const cat = document.createElement('img');
-          cat.className = 'cat-bg-icon';
-          cat.src = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f431.svg';
-          cat.style.left = Math.random() * (ww - 48) + 'px';
-          cat.style.top = Math.random() * (wh - 48) + 'px';
-          cat.style.transform = `rotate(${Math.random() * 60 - 30}deg)`;
-          body.appendChild(cat);
-        }
-      }
+  function showPopup() {
+    const popup = document.getElementById("popup");
+    const button = document.getElementById("btn-chucmung");
+    const clickSoundNormal = document.getElementById("clickSound");
+    const clickSoundBirthday = document.getElementById("birthdayClickSound");
 
-      addCatIconsToBackground();
-      window.addEventListener('resize', () => addCatIconsToBackground(32));
-    });
-  </script>
+    if (isBirthdayDay()) {
+      for(let i=0; i<100; i++) setTimeout(createFlower, Math.random() * 2000);
+      if (clickSoundBirthday && clickSoundBirthday.paused) {
+        clickSoundBirthday.currentTime = 0;
+        clickSoundBirthday.play();
+      }
+    } else {
+      createManyHearts(100);
+      if (clickSoundNormal && clickSoundNormal.paused) {
+        clickSoundNormal.currentTime = 0;
+        clickSoundNormal.play();
+      }
+    }
+
+    if (!isShowing) {
+      popup.classList.remove("hide");
+      popup.classList.add("show");
+      isShowing = true;
+    }
+
+    clearTimeout(popupTimeout);
+    popupTimeout = setTimeout(() => {
+      popup.classList.remove("show");
+      popup.classList.add("hide");
+      isShowing = false;
+      setTimeout(() => {
+        if (!isShowing) popup.style.display = "none";
+      }, 500);
+    }, 5000);
+
+    popup.style.display = "block";
+
+    button.classList.add("bounce");
+    button.addEventListener("animationend", () => {
+      button.classList.remove("bounce");
+    }, { once: true });
+  }
+
+  function showGiftPopup() {
+    const popup = document.getElementById("popup-gift");
+    if (!popup) return;
+    popup.classList.remove("hide");
+    popup.classList.add("show");
+    popup.style.display = "block";
+    setTimeout(() => {
+      popup.classList.remove("show");
+      popup.classList.add("hide");
+      setTimeout(() => { popup.style.display = "none"; }, 500);
+    }, 9900);
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const giftIcon = document.getElementById("gift-icon");
+
+    if (isBirthdayDay()) {
+      autoplayBirthdayMusic();
+      if (giftIcon) {
+        giftIcon.style.display = "inline-block";
+        giftIcon.addEventListener("click", showGiftPopup);
+      }
+      startFlowerRain();
+    } else {
+      giftIcon.style.display = "none";
+      startHeartsRain();
+    }
+
+    // Icon mèo nền
+    function addCatIconsToBackground(count = 32) {
+      document.querySelectorAll('.cat-bg-icon').forEach(e => e.remove());
+      const body = document.body;
+      const { innerWidth: ww, innerHeight: wh } = window;
+      for (let i = 0; i < count; i++) {
+        const cat = document.createElement('img');
+        cat.className = 'cat-bg-icon';
+        cat.src = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f431.svg';
+        cat.style.left = Math.random() * (ww - 48) + 'px';
+        cat.style.top = Math.random() * (wh - 48) + 'px';
+        cat.style.transform = `rotate(${Math.random() * 60 - 30}deg)`;
+        body.appendChild(cat);
+      }
+    }
+
+    addCatIconsToBackground();
+    window.addEventListener('resize', () => addCatIconsToBackground(32));
+  });
+</script>
 </body>
-    </html>
-    
+  </html>
+                          
